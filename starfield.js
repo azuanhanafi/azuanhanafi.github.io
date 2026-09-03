@@ -23,8 +23,10 @@
   var rgb = themeRGB();
 
   function build() {
-    w = canvas.clientWidth;
-    h = canvas.clientHeight;
+    w = canvas.clientWidth || window.innerWidth;
+    h = canvas.clientHeight || window.innerHeight;
+    if (w < 50) w = window.innerWidth;
+    if (h < 50) h = window.innerHeight;
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -126,4 +128,10 @@
 
   build();
   start();
+
+  // Recompute once everything (fonts, layout) has settled.
+  window.addEventListener("load", function () {
+    build();
+    start();
+  });
 })();
