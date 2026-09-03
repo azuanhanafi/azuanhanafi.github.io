@@ -96,20 +96,13 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   height: 60px;
 }
 
-.nav__brand {
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: var(--text);
-  letter-spacing: 0.05em;
-}
-
 .nav__links {
   display: flex;
   gap: 22px;
   list-style: none;
   margin: 0;
   padding: 0;
-  margin-left: auto;
+  margin-right: auto;
 }
 
 .nav__links a {
@@ -132,8 +125,19 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 
 /* ---------- Hero ---------- */
 .hero {
-  padding-top: 88px;
+  padding-top: 72px;
   padding-bottom: 72px;
+}
+
+.hero__avatar {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow);
+  display: block;
+  margin: 0 0 24px;
 }
 
 .hero__eyebrow {
@@ -144,6 +148,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 
 .hero__name {
   font-size: clamp(2.4rem, 6vw, 3.6rem);
+  letter-spacing: 0.02em;
   margin: 0 0 8px;
 }
 
