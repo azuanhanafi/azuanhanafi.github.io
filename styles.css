@@ -274,9 +274,9 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   flex-shrink: 0;
 }
 .timeline__headtext { min-width: 0; }
-.timeline__meta { color: var(--text-soft); font-size: 0.9rem; margin: 0 0 2px; }
 .timeline__headtext h3 { margin: 0 0 2px; font-size: 1.1rem; }
-.timeline__org { margin: 0; color: var(--accent); font-weight: 600; font-size: 0.95rem; }
+.timeline__org { margin: 0 0 2px; color: var(--accent); font-weight: 600; font-size: 0.95rem; }
+.timeline__meta { color: var(--text-soft); font-size: 0.9rem; margin: 0; }
 
 .timeline__body p { margin: 0; color: var(--text-soft); }
 .timeline__body ul { margin: 0; padding-left: 18px; color: var(--text-soft); }
