@@ -1,4 +1,5 @@
-// Subtle constellation background — drifting particles linked by faint lines.
+// Subtle constellation background — drifting particles linked by faint lines,
+// gently pushed away by the cursor/touch and drawing links to it nearby.
 // Respects prefers-reduced-motion, pauses when the tab is hidden, follows the theme.
 (function () {
   var canvas = document.getElementById("bg-canvas");
@@ -14,6 +15,10 @@
   var LINK_DIST = 130;
   var DOT_ALPHA = 0.3;
   var LINE_ALPHA = 0.1;
+  var CURSOR_RADIUS = 150;
+  var CURSOR_LINE_ALPHA = 0.22;
+  var CURSOR_PUSH = 0.6;
+  var mx = null, my = null;
 
   function themeRGB() {
     var t = document.documentElement.getAttribute("data-theme");
@@ -41,6 +46,8 @@
         y: Math.random() * h,
         vx: (Math.random() - 0.5) * 0.16,
         vy: (Math.random() - 0.5) * 0.16,
+        ox: 0,
+        oy: 0,
         r: Math.random() * 1.3 + 0.6
       });
     }
@@ -51,10 +58,36 @@
 
     for (var i = 0; i < particles.length; i++) {
       var p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
+
+      if (mx !== null) {
+        var cdx = p.x - mx, cdy = p.y - my;
+        var cd = Math.sqrt(cdx * cdx + cdy * cdy);
+        if (cd < CURSOR_RADIUS && cd > 0.01) {
+          var force = (1 - cd / CURSOR_RADIUS) * CURSOR_PUSH;
+          p.ox += (cdx / cd) * force;
+          p.oy += (cdy / cd) * force;
+        }
+      }
+
+      p.x += p.vx + p.ox;
+      p.y += p.vy + p.oy;
+      p.ox *= 0.92;
+      p.oy *= 0.92;
       if (p.x < -20) p.x = w + 20; else if (p.x > w + 20) p.x = -20;
       if (p.y < -20) p.y = h + 20; else if (p.y > h + 20) p.y = -20;
+
+      if (mx !== null) {
+        var ldx = p.x - mx, ldy = p.y - my;
+        var ld = Math.sqrt(ldx * ldx + ldy * ldy);
+        if (ld < CURSOR_RADIUS) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mx, my);
+          ctx.strokeStyle = "rgba(" + rgb + ", " + (CURSOR_LINE_ALPHA * (1 - ld / CURSOR_RADIUS)).toFixed(3) + ")";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -95,6 +128,30 @@
       loop();
     }
   }
+
+  function setPointer(clientX, clientY) {
+    var rect = canvas.getBoundingClientRect();
+    mx = clientX - rect.left;
+    my = clientY - rect.top;
+  }
+
+  window.addEventListener("mousemove", function (e) {
+    setPointer(e.clientX, e.clientY);
+  }, { passive: true });
+
+  window.addEventListener("mouseleave", function () {
+    mx = my = null;
+  });
+
+  window.addEventListener("touchmove", function (e) {
+    if (e.touches && e.touches.length) {
+      setPointer(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
+
+  window.addEventListener("touchend", function () {
+    mx = my = null;
+  });
 
   var resizeTimer = null;
   window.addEventListener("resize", function () {
