@@ -330,6 +330,28 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 .feature__sub { margin: 0 0 16px; color: var(--accent); font-weight: 600; font-size: 0.95rem; }
 .feature__desc { margin: 0 0 18px; color: var(--text-soft); max-width: 65ch; }
 
+.feature__gallery {
+  display: grid;
+  gap: 16px;
+  margin: 0 0 20px;
+}
+.feature__gallery figure {
+  margin: 0;
+}
+.feature__gallery img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+.feature__gallery figcaption {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  text-align: center;
+}
+
 /* ---------- Skills ---------- */
 .skills {
   display: grid;
