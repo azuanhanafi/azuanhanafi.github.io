@@ -262,7 +262,24 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 
 .timeline__meta { color: var(--text-soft); font-size: 0.9rem; padding-top: 3px; }
 .timeline__body h3 { margin: 0 0 2px; font-size: 1.1rem; }
-.timeline__org { margin: 0 0 8px; color: var(--accent); font-weight: 600; font-size: 0.95rem; }
+
+.timeline__orgline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+.timeline__logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.timeline__org { margin: 0; color: var(--accent); font-weight: 600; font-size: 0.95rem; }
 .timeline__body p { margin: 0; color: var(--text-soft); }
 .timeline__body ul { margin: 0; padding-left: 18px; color: var(--text-soft); }
 .timeline__body ul li { margin: 4px 0; }
