@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Azuan Hanafi — Configuration &amp; Data Management Specialist</title>
+  <title>Azuan Hanafi</title>
   <meta name="description" content="Azuan Hanafi — Configuration &amp; Data Management Specialist. 9+ years enforcing controlled, traceable engineering lifecycle data across PLM/ERP systems, now in certification-driven airborne engineering (DO-254, DO-178C, ARP4754A)." />
 
   <meta property="og:title" content="Azuan Hanafi — Configuration &amp; Data Management Specialist" />
@@ -12,7 +12,7 @@
   <meta property="og:url" content="https://azuanhanafi.my" />
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
@@ -38,7 +38,7 @@
       <img class="hero__avatar" src="assets/profile.jpg" alt="Azuan Hanafi" width="128" height="128" />
       <p class="hero__eyebrow">Kuala Lumpur, Malaysia</p>
       <h1 class="hero__name">AZUAN HANAFI</h1>
-      <p class="hero__title">Configuration &amp; Data Management Specialist</p>
+      <p class="hero__title"><span id="rotating-title">Configuration &amp; Data Management Specialist</span></p>
       <p class="hero__status"><span class="hero__status-dot" aria-hidden="true"></span>Open to configuration &amp; data management roles</p>
       <p class="hero__blurb">
         Configuration and data management professional with 9+ years enforcing controlled,
@@ -230,65 +230,88 @@
     <section id="skills" class="section container">
       <p class="section__eyebrow">Expertise</p>
       <h2 class="section__title">Skills</h2>
-      <div class="skills">
-        <div class="skills__group">
-          <h3>Configuration Management</h3>
-          <ul class="card__tags">
-            <li>Baseline management</li>
-            <li>Change control (CR/PR/ECN, CRB/SCCB)</li>
-            <li>Configuration status accounting</li>
-            <li>Configuration item identification</li>
-            <li>Release management</li>
-            <li>Audit &amp; compliance evidence readiness</li>
-          </ul>
+      <div class="expertise">
+        <div class="expertise__tabs" role="tablist" aria-label="Skill categories">
+          <button type="button" class="expertise__tab is-active" role="tab" aria-selected="true" aria-controls="panel-0" id="tab-0" data-index="0">
+            <span class="expertise__tab-num">01</span>
+            <span class="expertise__tab-label">Configuration Management</span>
+          </button>
+          <button type="button" class="expertise__tab" role="tab" aria-selected="false" aria-controls="panel-1" id="tab-1" data-index="1">
+            <span class="expertise__tab-num">02</span>
+            <span class="expertise__tab-label">Engineering CM &amp; Requirements Tools</span>
+          </button>
+          <button type="button" class="expertise__tab" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" data-index="2">
+            <span class="expertise__tab-num">03</span>
+            <span class="expertise__tab-label">PLM / ERP &amp; Service Management</span>
+          </button>
+          <button type="button" class="expertise__tab" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" data-index="3">
+            <span class="expertise__tab-num">04</span>
+            <span class="expertise__tab-label">Reporting &amp; Analysis</span>
+          </button>
+          <button type="button" class="expertise__tab" role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" data-index="4">
+            <span class="expertise__tab-num">05</span>
+            <span class="expertise__tab-label">Collaboration &amp; Documentation</span>
+          </button>
+          <button type="button" class="expertise__tab" role="tab" aria-selected="false" aria-controls="panel-5" id="tab-5" data-index="5">
+            <span class="expertise__tab-num">06</span>
+            <span class="expertise__tab-label">Standards &amp; Regulated Environments</span>
+          </button>
         </div>
-        <div class="skills__group">
-          <h3>Engineering CM &amp; Requirements Tools</h3>
-          <ul class="card__tags">
-            <li>JIRA</li>
-            <li>IBM DOORS</li>
-            <li>LDRA</li>
-            <li>SVN</li>
-            <li>Git</li>
-          </ul>
-        </div>
-        <div class="skills__group">
-          <h3>PLM / ERP &amp; Service Management</h3>
-          <ul class="card__tags">
-            <li>Windchill PLM</li>
-            <li>Oracle ERP</li>
-            <li>SAP</li>
-            <li>Cherwell CSM</li>
-          </ul>
-        </div>
-        <div class="skills__group">
-          <h3>Reporting &amp; Analysis</h3>
-          <ul class="card__tags">
-            <li>Microsoft Power BI</li>
-            <li>Google Looker Studio</li>
-            <li>Excel (Advanced, incl. VBA)</li>
-            <li>SQL</li>
-          </ul>
-        </div>
-        <div class="skills__group">
-          <h3>Collaboration &amp; Documentation</h3>
-          <ul class="card__tags">
-            <li>Confluence</li>
-            <li>Microsoft 365</li>
-            <li>Teams</li>
-            <li>SharePoint</li>
-          </ul>
-        </div>
-        <div class="skills__group">
-          <h3>Standards &amp; Regulated Environments</h3>
-          <ul class="card__tags">
-            <li>DO&#8209;254</li>
-            <li>DO&#8209;178C</li>
-            <li>ARP4754A</li>
-            <li>IATF 16949</li>
-            <li>ISO 9001</li>
-            <li>IEC 60601</li>
-          </ul>
+
+        <div class="expertise__panels">
+          <div class="expertise__panel is-active" role="tabpanel" id="panel-0" aria-labelledby="tab-0">
+            <ul class="card__tags">
+              <li>Baseline management</li>
+              <li>Change control (CR/PR/ECN, CRB/SCCB)</li>
+              <li>Configuration status accounting</li>
+              <li>Configuration item identification</li>
+              <li>Release management</li>
+              <li>Audit &amp; compliance evidence readiness</li>
+            </ul>
+          </div>
+          <div class="expertise__panel" role="tabpanel" id="panel-1" aria-labelledby="tab-1" hidden>
+            <ul class="card__tags">
+              <li>JIRA</li>
+              <li>IBM DOORS</li>
+              <li>LDRA</li>
+              <li>SVN</li>
+              <li>Git</li>
+            </ul>
+          </div>
+          <div class="expertise__panel" role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>
+            <ul class="card__tags">
+              <li>Windchill PLM</li>
+              <li>Oracle ERP</li>
+              <li>SAP</li>
+              <li>Cherwell CSM</li>
+            </ul>
+          </div>
+          <div class="expertise__panel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden>
+            <ul class="card__tags">
+              <li>Microsoft Power BI</li>
+              <li>Google Looker Studio</li>
+              <li>Excel (Advanced, incl. VBA)</li>
+              <li>SQL</li>
+            </ul>
+          </div>
+          <div class="expertise__panel" role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden>
+            <ul class="card__tags">
+              <li>Confluence</li>
+              <li>Microsoft 365</li>
+              <li>Teams</li>
+              <li>SharePoint</li>
+            </ul>
+          </div>
+          <div class="expertise__panel" role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden>
+            <ul class="card__tags">
+              <li>DO&#8209;254</li>
+              <li>DO&#8209;178C</li>
+              <li>ARP4754A</li>
+              <li>IATF 16949</li>
+              <li>ISO 9001</li>
+              <li>IEC 60601</li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -336,7 +359,7 @@
     </div>
   </footer>
 
-  <script src="script.js?v=2"></script>
-  <script src="starfield.js?v=2"></script>
+  <script src="script.js?v=3"></script>
+  <script src="starfield.js?v=3"></script>
 </body>
 </html>
