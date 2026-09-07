@@ -1,6 +1,16 @@
 // Footer year
 document.getElementById("year").textContent = new Date().getFullYear();
 
+// Build the email link at runtime so the address isn't sitting in the
+// static HTML for scrapers/bots to harvest.
+(function () {
+  var link = document.getElementById("email-link");
+  if (!link) return;
+  var user = "azuanhanafi23";
+  var domain = "gmail.com";
+  link.href = "mailto:" + user + "@" + domain;
+})();
+
 // Theme toggle with localStorage persistence
 (function () {
   var root = document.documentElement;
