@@ -415,7 +415,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 }
 .feature__title { margin: 0 0 4px; font-size: 1.35rem; }
 .feature__sub { margin: 0 0 16px; color: var(--accent); font-weight: 600; font-size: 0.95rem; }
-.feature__desc { margin: 0 0 18px; color: var(--text-soft); max-width: 65ch; }
+.feature__desc { margin: 0 0 18px; color: var(--text-soft); }
 
 .feature--upcoming {
   border-left-style: dashed;
