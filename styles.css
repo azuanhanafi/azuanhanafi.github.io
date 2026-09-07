@@ -564,6 +564,13 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 .site-footer p { margin: 0; }
 
 /* ---------- Responsive ---------- */
+@media (max-width: 880px) {
+  .nav {
+    width: auto;
+    margin-inline: 16px;
+  }
+}
+
 @media (max-width: 720px) {
   .expertise { grid-template-columns: 1fr; }
   .expertise__tabs {
