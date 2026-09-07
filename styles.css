@@ -95,9 +95,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   position: sticky;
   top: 0;
   z-index: 20;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
+  padding-block: 16px;
 }
 
 .nav {
@@ -105,6 +103,12 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   align-items: center;
   gap: 20px;
   height: 60px;
+  padding-inline: 24px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
 }
 
 .nav__links {
@@ -125,7 +129,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 .theme-toggle {
   background: var(--bg-soft);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 999px;
   width: 38px;
   height: 38px;
   cursor: pointer;
@@ -366,6 +370,31 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 .timeline__body ul { margin: 0; padding-left: 18px; color: var(--text-soft); }
 .timeline__body ul li { margin: 4px 0; }
 
+/* ---------- Disclaimer ---------- */
+.disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 14px 16px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.disclaimer__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--text-soft);
+}
+.disclaimer p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
 /* ---------- Featured project ---------- */
 .feature {
   background: var(--surface);
@@ -379,6 +408,27 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 .feature__title { margin: 0 0 4px; font-size: 1.35rem; }
 .feature__sub { margin: 0 0 16px; color: var(--accent); font-weight: 600; font-size: 0.95rem; }
 .feature__desc { margin: 0 0 18px; color: var(--text-soft); max-width: 65ch; }
+
+.feature--upcoming {
+  border-left-style: dashed;
+  border-left-color: var(--border);
+  box-shadow: none;
+  background: transparent;
+}
+.feature--upcoming .feature__desc { margin-bottom: 0; }
+.feature__status {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 
 .feature__gallery {
   display: grid;
