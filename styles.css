@@ -177,6 +177,14 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   text-align: center;
 }
 
+#rotating-title {
+  display: inline-block;
+  transition: opacity 0.3s ease;
+}
+#rotating-title.is-fading {
+  opacity: 0;
+}
+
 .hero__status {
   display: flex;
   align-items: center;
@@ -452,16 +460,59 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   text-align: center;
 }
 
-/* ---------- Skills ---------- */
-.skills {
+/* ---------- Skills / Expertise ---------- */
+.expertise {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
   margin-bottom: 40px;
 }
-.skills__group h3 { margin: 0 0 10px; font-size: 1rem; }
-.skills__group p { margin: 0; color: var(--text-soft); font-size: 0.95rem; }
-.skills__group .card__tags { margin: 0; }
+.expertise__tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.expertise__tab {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  color: var(--text-soft);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.expertise__tab:hover { background: var(--bg-soft); color: var(--text); }
+.expertise__tab.is-active {
+  background: var(--bg-soft);
+  border-left-color: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+.expertise__tab-num {
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.expertise__tab.is-active .expertise__tab-num { color: var(--accent); }
+.expertise__tab-label { font-size: 0.95rem; }
+
+.expertise__panels {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  min-height: 140px;
+  box-shadow: var(--shadow);
+}
+.expertise__panel .card__tags { margin: 0; }
 
 .skills__heading { margin: 28px 0 8px; font-size: 1.15rem; }
 
@@ -516,6 +567,22 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 }
 
 /* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+  .expertise { grid-template-columns: 1fr; }
+  .expertise__tabs {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .expertise__tab {
+    width: auto;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 8px 8px 0 0;
+  }
+  .expertise__tab.is-active { border-left-color: transparent; border-bottom-color: var(--accent); }
+}
+
 @media (max-width: 560px) {
   .nav__links { gap: 14px; }
   .timeline__logo { width: 56px; height: 56px; }
