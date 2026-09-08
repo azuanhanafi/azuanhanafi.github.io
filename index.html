@@ -213,6 +213,30 @@
         </ul>
       </article>
 
+      <article class="feature">
+        <span class="feature__status">Design Proposal</span>
+        <h3 class="feature__title">SCCB Digital Approval Workflow</h3>
+        <p class="feature__sub">Jira Premium approvals &amp; automation redesign &mdash; Turkish Aerospace Malaysia (TUSAS)</p>
+        <p class="feature__desc">
+          Replaced a manual, minutes-based SCCB approval process with an auditable Jira Premium
+          workflow. Diagnosed the core risk &mdash; SCR/PR/ECM decisions lived in free-text meeting
+          minutes with no system-enforced link to the ticket &mdash; and designed a three-part fix:
+          a dedicated SCCB Review issue type, native digital Approvals for unanimous timestamped
+          sign-off, and three Automation Rules removing manual handling entirely. Built a full
+          traceability matrix mapping every governance rule to its Jira mechanism, and caught a
+          design flaw pre-build where unanimous approval over an empty approver field would
+          auto-pass with zero real sign-offs. Delivered as a formal design proposal for Software
+          Lead/SCMR/SQAR sign-off ahead of a sandbox pilot and org-wide rollout.
+        </p>
+        <ul class="card__tags">
+          <li>Jira Cloud Premium</li>
+          <li>Jira Automation</li>
+          <li>Native Approvals</li>
+          <li>Smart Values &amp; Lookup Tables</li>
+          <li>JQL</li>
+        </ul>
+      </article>
+
       <article class="feature feature--upcoming">
         <span class="feature__status">Upcoming</span>
         <h3 class="feature__title">More Work in Progress</h3>
