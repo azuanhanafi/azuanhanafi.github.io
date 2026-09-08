@@ -145,14 +145,20 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 }
 
 .hero__avatar {
-  width: 128px;
-  height: 128px;
+  width: 152px;
+  height: 152px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid var(--border);
   box-shadow: var(--shadow);
   display: block;
   margin: 0 auto 24px;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.hero__avatar:hover {
+  transform: scale(1.05);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent), 0 10px 24px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .hero__eyebrow {
@@ -190,6 +196,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   align-items: center;
   gap: 8px;
   width: fit-content;
+  max-width: 100%;
   margin: 0 auto 24px;
   padding: 6px 14px;
   border-radius: 999px;
@@ -198,6 +205,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   color: var(--text-soft);
   font-size: 0.85rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 .hero__status-dot {
   width: 8px;
@@ -608,4 +616,5 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   .hero__stat { padding: 12px 6px; }
   .hero__stat-value { font-size: 1.3rem; }
   .hero__stat-label { font-size: 0.64rem; }
+  .hero__status { font-size: 0.72rem; padding: 6px 12px; gap: 6px; }
 }
