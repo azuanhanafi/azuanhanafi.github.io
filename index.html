@@ -12,7 +12,7 @@
   <meta property="og:url" content="https://azuanhanafi.my" />
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
@@ -27,12 +27,13 @@
         <li><a href="#contact">Contact</a></li>
       </ul>
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme" type="button">
-        <span aria-hidden="true">🌙</span>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path></svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
       </button>
     </nav>
   </header>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
     <!-- HERO -->
     <section id="top" class="hero container">
       <img class="hero__avatar" src="assets/profile.jpg?v=2" alt="Azuan Hanafi" width="152" height="152" />
@@ -194,15 +195,15 @@
         </p>
         <div class="feature__gallery">
           <figure>
-            <img src="assets/projects/pqre-closure-rate.png" alt="PQRE Dashboard: change request closure rate chart against a 95% on-time target" loading="lazy">
+            <img src="assets/projects/pqre-closure-rate.png" alt="PQRE Dashboard: change request closure rate chart against a 95% on-time target" width="1200" height="552" loading="lazy">
             <figcaption>Change request closure rate against KPI target</figcaption>
           </figure>
           <figure>
-            <img src="assets/projects/pqre-aging.png" alt="PQRE Dashboard: Jira ticket status aging charts and ticket detail table" loading="lazy">
+            <img src="assets/projects/pqre-aging.png" alt="PQRE Dashboard: Jira ticket status aging charts and ticket detail table" width="1200" height="570" loading="lazy">
             <figcaption>Ticket aging - how long items have sat in each status</figcaption>
           </figure>
           <figure>
-            <img src="assets/projects/pqre-status.png" alt="PQRE Dashboard: software configuration life cycle data status table showing PDR and CDR document releases" loading="lazy">
+            <img src="assets/projects/pqre-status.png" alt="PQRE Dashboard: software configuration life cycle data status table showing PDR and CDR document releases" width="1200" height="594" loading="lazy">
             <figcaption>Configuration item status across PDR and CDR baselines</figcaption>
           </figure>
         </div>
@@ -397,7 +398,7 @@
     <p>&copy; <span id="year"></span> Azuan Hanafi. Built with plain HTML &amp; CSS.</p>
   </footer>
 
-  <script src="script.js?v=9"></script>
-  <script src="starfield.js?v=9"></script>
+  <script src="script.js?v=10"></script>
+  <script src="starfield.js?v=10"></script>
 </body>
 </html>
