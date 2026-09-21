@@ -104,7 +104,7 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
-h1, h2, h3 { line-height: 1.25; font-weight: 700; }
+h1, h2, h3 { line-height: 1.25; font-weight: 700; text-wrap: balance; }
 
 .skip-link {
   position: absolute;
@@ -532,7 +532,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   cursor: pointer;
   font: inherit;
   color: var(--text-soft);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-left-color 0.15s ease, border-bottom-color 0.15s ease;
 }
 .expertise__tab:hover { background: var(--bg-soft); color: var(--text); }
 .expertise__tab.is-active {
