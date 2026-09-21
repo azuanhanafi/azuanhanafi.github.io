@@ -36,8 +36,8 @@
     canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    var count = Math.round((w * h) / 22000);
-    count = Math.max(22, Math.min(85, count));
+    var count = Math.round((w * h) / 14000);
+    count = Math.max(32, Math.min(140, count));
 
     particles = [];
     for (var i = 0; i < count; i++) {
