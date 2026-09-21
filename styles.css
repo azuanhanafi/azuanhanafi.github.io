@@ -309,7 +309,6 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 }
 .btn:hover { text-decoration: none; transform: translateY(-1px); }
 .btn--primary { background: var(--accent-text); color: var(--accent-contrast); }
-.btn--ghost { background: transparent; border-color: var(--border); color: var(--text); }
 
 /* ---------- Sections ---------- */
 .section {
@@ -337,26 +336,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   font-size: 1.05rem;
 }
 
-/* ---------- Projects ---------- */
-.projects {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-}
-
-.card__title { margin: 0 0 8px; font-size: 1.2rem; }
-.card__desc { margin: 0 0 16px; color: var(--text-soft); flex-grow: 1; }
-
+/* ---------- Tags ---------- */
 .card__tags {
   display: flex;
   flex-wrap: wrap;
@@ -373,8 +353,6 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   padding: 3px 10px;
   border-radius: 999px;
 }
-
-.card__links { display: flex; gap: 16px; font-size: 0.92rem; font-weight: 600; }
 
 /* ---------- Timeline ---------- */
 .timeline { margin: 0 0 32px; }
@@ -516,7 +494,6 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 24px;
-  align-items: start;
   margin-bottom: 40px;
 }
 .expertise__tabs {
