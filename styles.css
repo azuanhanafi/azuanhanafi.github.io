@@ -45,6 +45,15 @@
 /* ---------- Base ---------- */
 * { box-sizing: border-box; }
 
+/* Brief, bounded transition applied only while the theme toggle is
+   switching, so the color swap fades instead of snapping. Removed
+   again right after so it never interferes with per-element hover
+   transitions elsewhere. */
+.theme-transition,
+.theme-transition * {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html { scroll-behavior: smooth; }
 }

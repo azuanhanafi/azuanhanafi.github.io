@@ -35,12 +35,16 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
   toggle.addEventListener("click", function () {
     var next = current() === "dark" ? "light" : "dark";
+    root.classList.add("theme-transition");
     root.setAttribute("data-theme", next);
     try {
       localStorage.setItem("theme", next);
     } catch (e) {
       /* ignore */
     }
+    window.setTimeout(function () {
+      root.classList.remove("theme-transition");
+    }, 260);
   });
 })();
 
