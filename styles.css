@@ -496,6 +496,7 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; }
 .feature__gallery img {
   display: block;
   width: 100%;
+  height: auto;
   border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: var(--shadow);
