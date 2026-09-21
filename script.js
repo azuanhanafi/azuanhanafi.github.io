@@ -44,7 +44,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
     }
     window.setTimeout(function () {
       root.classList.remove("theme-transition");
-    }, 260);
+    }, 460);
   });
 })();
 
