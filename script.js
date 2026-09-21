@@ -33,10 +33,6 @@ document.getElementById("year").textContent = new Date().getFullYear();
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
-  function render() {
-    toggle.firstElementChild.textContent = current() === "dark" ? "☀️" : "🌙";
-  }
-
   toggle.addEventListener("click", function () {
     var next = current() === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
@@ -45,10 +41,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
     } catch (e) {
       /* ignore */
     }
-    render();
   });
-
-  render();
 })();
 
 // Rotating hero title — cycles through true facets of the same role
@@ -102,4 +95,62 @@ document.getElementById("year").textContent = new Date().getFullYear();
       }
     });
   });
+})();
+
+// Scroll-spy — highlight the nav link for the section currently in view
+(function () {
+  if (!("IntersectionObserver" in window)) return;
+
+  var navLinks = document.querySelectorAll('.nav__links a[href^="#"]');
+  if (!navLinks.length) return;
+
+  var sections = [];
+  navLinks.forEach(function (link) {
+    var section = document.getElementById(link.getAttribute("href").slice(1));
+    if (section) sections.push({ link: link, section: section });
+  });
+  if (!sections.length) return;
+
+  function setActive(link) {
+    navLinks.forEach(function (l) {
+      l.classList.remove("is-active");
+      l.removeAttribute("aria-current");
+    });
+    link.classList.add("is-active");
+    link.setAttribute("aria-current", "page");
+  }
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var match = sections.find(function (s) {
+          return s.section === entry.target;
+        });
+        if (match) setActive(match.link);
+      });
+    },
+    { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+  );
+
+  sections.forEach(function (s) {
+    observer.observe(s.section);
+  });
+
+  // Fallback: the last section can't always be scrolled far enough to
+  // cross the observer's trigger zone, so force it active at page bottom.
+  var ticking = false;
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+        if (atBottom) setActive(sections[sections.length - 1].link);
+        ticking = false;
+      });
+    },
+    { passive: true }
+  );
 })();
