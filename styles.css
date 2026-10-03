@@ -686,3 +686,9 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; text-wrap: balance; }
   .hero__stat-label { font-size: 0.64rem; }
   .hero__status { font-size: 0.72rem; padding: 6px 12px; gap: 6px; }
 }
+
+@media (max-width: 360px) {
+  .nav { padding-inline: 10px; gap: 10px; }
+  .nav__links { gap: 8px; }
+  .nav__links a { font-size: 0.85rem; }
+}
