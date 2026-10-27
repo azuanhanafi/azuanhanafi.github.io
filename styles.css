@@ -503,6 +503,10 @@ h1, h2, h3 { line-height: 1.25; font-weight: 700; text-wrap: balance; }
 .feature__title { margin: 0 0 4px; font-size: 1.35rem; }
 .feature__sub { margin: 0 0 16px; color: var(--accent-text); font-weight: 600; font-size: 0.95rem; }
 .feature__desc { margin: 0 0 18px; color: var(--text-soft); }
+.feature__desc--lead { margin-bottom: 10px; }
+.feature__list { margin: 0 0 18px; padding-left: 18px; color: var(--text-soft); }
+.feature__list li { margin: 6px 0; }
+.feature__list strong { color: var(--text); font-weight: 600; }
 
 .feature--upcoming {
   border-left-style: dashed;
