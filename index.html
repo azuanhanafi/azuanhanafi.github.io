@@ -12,7 +12,7 @@
   <meta property="og:url" content="https://azuanhanafi.my" />
 
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💻</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=19" />
+  <link rel="stylesheet" href="styles.css?v=20" />
 </head>
 <body>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
@@ -188,6 +188,7 @@
       </div>
 
       <article class="feature">
+        <span class="feature__status">Self-initiated &middot; Delivered</span>
         <h3 class="feature__title">PQRE Dashboard</h3>
         <p class="feature__sub">JIRA Change Request dashboard - Turkish Aerospace Malaysia (TUSAS)</p>
         <p class="feature__desc">
@@ -221,44 +222,34 @@
       </article>
 
       <article class="feature">
-        <h3 class="feature__title">SCCB Digital Approval Workflow</h3>
-        <p class="feature__sub">JIRA Approvals &amp; Automation Redesign - Turkish Aerospace Malaysia (TUSAS)</p>
+        <span class="feature__status">Self-initiated &middot; Rolling out</span>
+        <h3 class="feature__title">JIRA Change Management Architecture</h3>
+        <p class="feature__sub">JIRA Change Control Redesign - Turkish Aerospace Malaysia (TUSAS)</p>
+        <p class="feature__desc feature__desc--lead">
+          Change requests, configuration items, and SCCB reviews all ran in JIRA without one defined
+          structure: items had no consistent ID, key fields could be left blank, and SCR/PR/ECM decisions
+          lived in free-text meeting minutes with no system-enforced link to the ticket, routed and chased
+          by hand. Designed a change management architecture that gives every change one controlled path
+          from request through SCCB review to closure, built from three parts:
+        </p>
+        <ul class="feature__list">
+          <li><strong>Standard Item ID scheme</strong> - every configuration item and change request follows one traceable naming convention, so items can be traced across baselines and related changes linked.</li>
+          <li><strong>Mandatory field enforcement</strong> - change request issue types stop incomplete records at entry instead of at audit.</li>
+          <li><strong>SCCB workflow automation</strong> - a dedicated SCCB Review issue type, native digital Approvals for unanimous, timestamped sign-off, and three Automation Rules that move changes through review and approval with status updates and notifications.</li>
+        </ul>
         <p class="feature__desc">
-          Replaced a manual, minutes-based SCCB approval process with an auditable Jira Premium
-          workflow. Diagnosed the core risk - SCR/PR/ECM decisions lived in free-text meeting
-          minutes with no system-enforced link to the ticket - and designed a three-part fix:
-          a dedicated SCCB Review issue type, native digital Approvals for unanimous timestamped
-          sign-off, and three Automation Rules removing manual handling entirely. Built a full
-          traceability matrix mapping every governance rule to its Jira mechanism, and caught a
-          design flaw pre-build where unanimous approval over an empty approver field would
-          auto-pass with zero real sign-offs.
+          Built a full traceability matrix mapping every governance rule to its Jira mechanism, and caught
+          a design flaw before build where unanimous approval over an empty approver field would auto-pass
+          with zero real sign-offs. Management approved the design; now leading the rollout with the SCCB
+          and engineering teams, validating each part before it replaces the manual process.
         </p>
         <ul class="card__tags">
           <li>Jira Cloud Premium</li>
           <li>Jira Automation</li>
           <li>Native Approvals</li>
-          <li>Smart Values &amp; Lookup Tables</li>
-          <li>JQL</li>
-        </ul>
-      </article>
-
-      <article class="feature">
-        <h3 class="feature__title">Item ID Standardization &amp; Field Enforcement</h3>
-        <p class="feature__sub">JIRA Data Quality Initiative - Turkish Aerospace Malaysia (TUSAS)</p>
-        <p class="feature__desc">
-          Configuration items and change requests in JIRA lacked a consistent identification scheme,
-          making it harder to trace items across baselines and link related changes. Proposed and
-          implemented a standardized Item ID scheme so every configuration item and change request
-          follows a consistent, traceable naming convention, alongside mandatory field enforcement on
-          change request issue types - closing gaps where incomplete records were previously accepted
-          and improving data quality at the point of entry rather than catching it later during audits.
-          Approved by management and currently rolling out across the CM function.
-        </p>
-        <ul class="card__tags">
-          <li>Jira Automation</li>
+          <li>Field Validators</li>
           <li>Smart Values &amp; Lookup Tables</li>
           <li>Data Quality</li>
-          <li>Field Validators</li>
           <li>JQL</li>
         </ul>
       </article>
