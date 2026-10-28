@@ -256,16 +256,20 @@
         ticking = false;
         lightWords();
         onTopScroll();
+        scrubSections();
       });
     },
     { passive: true }
   );
-  window.addEventListener("resize", lightWords);
+  window.addEventListener("resize", function () {
+    lightWords();
+    scrubSections();
+  });
   lightWords();
   onTopScroll();
 
   // ---------- Pointer spotlight on cards ----------
-  var spotTargets = ".kit__card, .edu, .cert, .xp__stage";
+  var spotTargets = ".kit__card, .edu, .cert, .xp__stage, .proj:not(.proj--soon)";
   each(spotTargets, function (el) {
     el.classList.add("spot");
   });
@@ -280,6 +284,146 @@
     },
     { passive: true }
   );
+
+  var finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  // ---------- Cards tilt and drift toward the cursor ----------
+  // [cards, inner layer that shifts the other way, max tilt Y, max tilt X]
+  var TILT = [
+    [".proj:not(.proj--soon)", ".proj__shot, .flow", 12, 10],
+    [".kit__card", ".kit__icon", 9, 7]
+  ];
+  if (!reduceMotion && finePointer) {
+    TILT.forEach(function (set) {
+      each(set[0], function (card) {
+        tilt(card, card.querySelector(set[1]), set[2], set[3]);
+      });
+    });
+  }
+
+  function tilt(card, inner, maxY, maxX) {
+    var now = { rx: 0, ry: 0, x: 0, y: 0, lift: 0 };
+    var goal = { rx: 0, ry: 0, x: 0, y: 0, lift: 0 };
+    var raf = 0;
+    card.classList.add("is-tilt");
+
+    var step = function () {
+      var moving = false;
+      Object.keys(now).forEach(function (k) {
+        now[k] += (goal[k] - now[k]) * 0.12;
+        if (Math.abs(goal[k] - now[k]) > 0.01) moving = true;
+      });
+      card.style.transform =
+        "perspective(1000px) translate3d(" + now.x.toFixed(2) + "px," + (now.y + now.lift).toFixed(2) + "px,0)" +
+        " rotateX(" + now.rx.toFixed(2) + "deg) rotateY(" + now.ry.toFixed(2) + "deg)";
+      // the inner layer drifts the other way for a little depth
+      if (inner) inner.style.transform = "translate3d(" + (-now.ry * 1.2).toFixed(2) + "px," + (now.rx * 1.2).toFixed(2) + "px,0)";
+      raf = moving ? requestAnimationFrame(step) : 0;
+    };
+    var kick = function () {
+      if (!raf) raf = requestAnimationFrame(step);
+    };
+
+    card.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "touch") return;
+      var r = card.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      goal.ry = px * maxY;
+      goal.rx = -py * maxX;
+      goal.x = px * 12;
+      goal.y = py * 10;
+      goal.lift = -6;
+      kick();
+    });
+    card.addEventListener("pointerleave", function () {
+      goal.rx = goal.ry = goal.x = goal.y = goal.lift = 0;
+      kick();
+    });
+  }
+
+  // ---------- Dark surfaces: green light follows the pointer ----------
+  if (finePointer) {
+    each("[data-glow]", function (el) {
+      el.addEventListener("pointermove", function (e) {
+        var r = el.getBoundingClientRect();
+        el.style.setProperty("--gx", e.clientX - r.left + "px");
+        el.style.setProperty("--gy", e.clientY - r.top + "px");
+        el.classList.add("is-lit");
+      });
+      el.addEventListener("pointerleave", function () {
+        el.classList.remove("is-lit");
+      });
+    });
+  }
+
+  // ---------- Contact ring: drifts toward the pointer, its dot turns to face it ----------
+  var orb = doc.querySelector(".cta__orb");
+  var orbDot = doc.querySelector(".cta__orb-dot");
+  var ctaCard = doc.querySelector(".cta");
+  if (orb && ctaCard && finePointer && !reduceMotion) {
+    var oNow = { x: 0, y: 0, a: 145 };
+    var oGoal = { x: 0, y: 0, a: 145 };
+    var oRaf = 0;
+    var orbStep = function () {
+      oNow.x += (oGoal.x - oNow.x) * 0.08;
+      oNow.y += (oGoal.y - oNow.y) * 0.08;
+      // turn the short way round the ring
+      var da = ((oGoal.a - oNow.a + 540) % 360) - 180;
+      oNow.a += da * 0.1;
+      orb.style.transform = "translate3d(" + oNow.x.toFixed(2) + "px," + oNow.y.toFixed(2) + "px,0)";
+      orbDot.style.setProperty("--a", oNow.a.toFixed(2) + "deg");
+      var busy = Math.abs(oGoal.x - oNow.x) > 0.05 || Math.abs(oGoal.y - oNow.y) > 0.05 || Math.abs(da) > 0.05;
+      oRaf = busy ? requestAnimationFrame(orbStep) : 0;
+    };
+    ctaCard.addEventListener("pointermove", function (e) {
+      var r = orb.getBoundingClientRect();
+      var cx = r.left + r.width / 2 - oNow.x;
+      var cy = r.top + r.height / 2 - oNow.y;
+      var dx = e.clientX - cx;
+      var dy = e.clientY - cy;
+      oGoal.x = Math.max(-48, Math.min(48, dx * 0.06));
+      oGoal.y = Math.max(-48, Math.min(48, dy * 0.06));
+      oGoal.a = (Math.atan2(dy, dx) * 180) / Math.PI;
+      if (!oRaf) oRaf = requestAnimationFrame(orbStep);
+    });
+    ctaCard.addEventListener("pointerleave", function () {
+      oGoal.x = oGoal.y = 0;
+      if (!oRaf) oRaf = requestAnimationFrame(orbStep);
+    });
+  }
+
+  // ---------- Scroll-driven: band widens, contact card scales in, steps line fills ----------
+  var band = doc.querySelector(".band");
+  var scaleIn = doc.querySelector("[data-scale-in]");
+  var stepsBox = doc.querySelector(".steps");
+  var stepsFill = doc.querySelector(".steps__line i");
+  var stepItems = all(".step");
+  function clamp01(v) {
+    return Math.max(0, Math.min(1, v));
+  }
+  function scrubSections() {
+    var vh = window.innerHeight;
+    if (band && !reduceMotion) {
+      var p = clamp01((vh - band.getBoundingClientRect().top) / (vh * 0.7));
+      var side = (1 - p) * (window.innerWidth > 760 ? 5 : 3);
+      band.style.clipPath = "inset(0% " + side.toFixed(2) + "% round " + (56 * (1 - p)).toFixed(1) + "px)";
+    }
+    if (scaleIn && !reduceMotion) {
+      var q = clamp01((vh - scaleIn.getBoundingClientRect().top) / (vh * 0.65));
+      scaleIn.style.transform = "scale(" + (0.86 + 0.14 * q).toFixed(4) + ")";
+      scaleIn.style.borderRadius = (80 - 44 * q).toFixed(1) + "px";
+    }
+    if (stepsFill) {
+      var r = stepsBox.getBoundingClientRect();
+      var f = reduceMotion ? 1 : clamp01((vh * 0.75 - r.top) / (r.height + vh * 0.2));
+      stepsFill.style.transform = "scaleX(" + f.toFixed(3) + ")";
+      stepItems.forEach(function (el, i) {
+        el.classList.toggle("is-on", f >= i / Math.max(stepItems.length - 1, 1) - 0.001);
+      });
+    }
+  }
+  scrubSections();
 
   // ---------- Custom cursor (mouse and pen only) ----------
   if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
@@ -383,6 +527,89 @@
         cursor.classList.add("is-hover");
         cursor.classList.remove("has-label");
       }
+    });
+  }
+
+  // ---------- Text: titles rise line by line, leads follow, eyebrows scramble ----------
+  var anime = window.anime;
+  if (anime && anime.splitText && anime.scrambleText && !reduceMotion && "IntersectionObserver" in window) {
+    var textObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          textObserver.unobserve(entry.target);
+          if (entry.target.__reveal) entry.target.__reveal();
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px" }
+    );
+
+    var TITLE = {
+      lines: { wrap: "clip", class: "ln" },
+      hidden: { translateY: "110%" },
+      show: { translateY: ["110%", "0%"], duration: 1100, delay: anime.stagger(110), ease: "outExpo" }
+    };
+    var LEAD = {
+      lines: { class: "ln" },
+      hidden: { opacity: 0, translateY: "0.6em" },
+      show: { opacity: [0, 1], translateY: ["0.6em", "0em"], duration: 900, delay: anime.stagger(80, { start: 200 }), ease: "outQuart" }
+    };
+
+    var splitReveal = function (el, preset) {
+      var seen = false;
+      var done = false;
+      var splitter = anime.splitText(el, { lines: preset.lines });
+      var play = function (lines) {
+        done = true;
+        anime.animate(lines, preset.show);
+      };
+      // Runs after every split, including re-splits when the width changes
+      splitter.addEffect(function (self) {
+        el.classList.add("is-split");
+        if (done) return;
+        if (seen) play(self.lines);
+        else anime.utils.set(self.lines, preset.hidden);
+      });
+      el.__reveal = function () {
+        seen = true;
+        if (!done && splitter.ready && splitter.lines.length) play(splitter.lines);
+      };
+      textObserver.observe(el);
+    };
+
+    each(".hero__title, .section .title, .cta__title", function (el) {
+      splitReveal(el, TITLE);
+    });
+    each(".hero__lede, .section__lead:not(.section__lead--note), .section__lead--note > span, .cta__lead", function (el) {
+      splitReveal(el, LEAD);
+    });
+
+    each(".eyebrow", function (eyebrow) {
+      if (eyebrow.closest("dialog")) return;
+      var dots = eyebrow.querySelector(".eyebrow__dots");
+      var label = eyebrow.textContent.trim();
+      // Screen readers get the real label; the scramble runs on a visual copy
+      Array.prototype.slice.call(eyebrow.childNodes).forEach(function (n) {
+        if (n !== dots) eyebrow.removeChild(n);
+      });
+      var sr = doc.createElement("span");
+      sr.className = "sr-only";
+      sr.textContent = label;
+      var shown = doc.createElement("span");
+      shown.setAttribute("aria-hidden", "true");
+      shown.textContent = label;
+      eyebrow.appendChild(sr);
+      eyebrow.appendChild(shown);
+      eyebrow.__reveal = function () {
+        anime.animate(shown, {
+          textContent: anime.scrambleText({ chars: "A-Z0-9", revealRate: 45, settleDuration: 420, cursor: "_" })
+        });
+      };
+      textObserver.observe(eyebrow);
+    });
+  } else {
+    each(".hero__title, .hero__lede", function (el) {
+      el.classList.add("is-split");
     });
   }
 

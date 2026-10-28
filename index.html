@@ -15,7 +15,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='13' cy='18' r='11' fill='%230A282D'/%3E%3Ccircle cx='13' cy='18' r='4.5' fill='%233DB663'/%3E%3Ccircle cx='24.5' cy='7.5' r='5.5' fill='%23B07040'/%3E%3C/svg%3E" />
   <link rel="preload" href="vendor/fonts/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="vendor/fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=22" />
+  <link rel="stylesheet" href="styles.css?v=25" />
   <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -132,7 +132,7 @@
     <!-- EXPERIENCE -->
     <section id="experience" class="section">
       <div class="container">
-        <header class="section__head" data-reveal>
+        <header class="section__head">
           <div>
             <p class="eyebrow"><span class="eyebrow__dots" aria-hidden="true"></span>Experience</p>
             <h2 class="title">Four roles, one <span class="accent">discipline.</span></h2>
@@ -273,7 +273,7 @@
     <!-- CAPABILITIES -->
     <section id="capabilities" class="section">
       <div class="container">
-        <header class="section__head" data-reveal>
+        <header class="section__head">
           <div>
             <p class="eyebrow"><span class="eyebrow__dots" aria-hidden="true"></span>Capabilities</p>
             <h2 class="title">Four ways I keep change <span class="accent">controlled.</span></h2>
@@ -304,7 +304,6 @@
                 </ul>
               </div>
               <div class="mock" aria-hidden="true">
-                <p class="mock__tag">Sample</p>
                 <div class="mock__row mock__row--root"><b>CI-0142</b><span>Flight control software</span></div>
                 <div class="mock__row"><b>REQ-0142-01</b><span>Requirements</span><i class="ok">Baselined</i></div>
                 <div class="mock__row"><b>DES-0142-02</b><span>Design</span><i class="ok">Baselined</i></div>
@@ -333,7 +332,6 @@
                 </ul>
               </div>
               <div class="mock" aria-hidden="true">
-                <p class="mock__tag">Sample</p>
                 <div class="mock__ticket">
                   <div class="mock__ticket-top"><b>CR-0142</b><i class="ok">Approved</i></div>
                   <p>Flight control software</p>
@@ -368,7 +366,6 @@
                 </ul>
               </div>
               <div class="mock" aria-hidden="true">
-                <p class="mock__tag">Sample</p>
                 <div class="mock__kpis">
                   <div><b>12</b><span>Open CRs</span></div>
                   <div><b>96%</b><span>Closed on time</span></div>
@@ -398,7 +395,6 @@
                 </ul>
               </div>
               <div class="mock" aria-hidden="true">
-                <p class="mock__tag">Sample</p>
                 <ol class="mock__versions">
                   <li><b>v2.2</b><span>Released</span></li>
                   <li><b>v2.3</b><span>Released</span></li>
@@ -414,7 +410,7 @@
     <!-- PROJECTS -->
     <section id="projects" class="section">
       <div class="container">
-        <header class="section__head" data-reveal>
+        <header class="section__head">
           <div>
             <p class="eyebrow"><span class="eyebrow__dots" aria-hidden="true"></span>Projects</p>
             <h2 class="title">Systems already <span class="accent">at work.</span></h2>
@@ -539,9 +535,10 @@
     </section>
 
     <!-- HOW I WORK -->
-    <section id="process" class="section band">
+    <section id="process" class="section band" data-glow>
+      <div class="dark-dots" aria-hidden="true"></div>
       <div class="container">
-        <header class="section__head" data-reveal>
+        <header class="section__head">
           <div>
             <p class="eyebrow"><span class="eyebrow__dots" aria-hidden="true"></span>How I work</p>
             <h2 class="title">Controlled from request <span class="accent">to release.</span></h2>
@@ -550,30 +547,33 @@
             Every change follows the same path, so nothing slips in unapproved and nothing ships without a record.
           </p>
         </header>
-        <ol class="steps" data-reveal>
-          <li class="step">
-            <span class="step__num">01</span>
-            <h3 class="step__title">Identify</h3>
-            <p class="step__text">Define configuration items and baselines so every change has a home.</p>
-          </li>
-          <li class="step">
-            <span class="step__num">02</span>
-            <h3 class="step__title">Control</h3>
-            <p class="step__text">Route each change through impact assessment and board approval.</p>
-          </li>
-          <li class="step">
-            <span class="step__num">03</span>
-            <h3 class="step__title">Account</h3>
-            <p class="step__text">Report what changed, what&rsquo;s approved and what&rsquo;s released, ready for audit.</p>
-          </li>
-        </ol>
+        <div class="steps" data-reveal>
+          <span class="steps__line" aria-hidden="true"><i></i></span>
+          <ol class="steps__list">
+            <li class="step">
+              <span class="step__ring" aria-hidden="true"><span class="step__num">01</span></span>
+              <h3 class="step__title"><span class="sr-only">Step 1: </span>Identify</h3>
+              <p class="step__text">Define configuration items and baselines so every change has a home.</p>
+            </li>
+            <li class="step">
+              <span class="step__ring" aria-hidden="true"><span class="step__num">02</span></span>
+              <h3 class="step__title"><span class="sr-only">Step 2: </span>Control</h3>
+              <p class="step__text">Route each change through impact assessment and board approval.</p>
+            </li>
+            <li class="step">
+              <span class="step__ring" aria-hidden="true"><span class="step__num">03</span></span>
+              <h3 class="step__title"><span class="sr-only">Step 3: </span>Account</h3>
+              <p class="step__text">Report what changed, what&rsquo;s approved and what&rsquo;s released, ready for audit.</p>
+            </li>
+          </ol>
+        </div>
       </div>
     </section>
 
     <!-- SKILLS -->
     <section id="skills" class="section">
       <div class="container">
-        <header class="section__head" data-reveal>
+        <header class="section__head">
           <div>
             <p class="eyebrow"><span class="eyebrow__dots" aria-hidden="true"></span>Skills &amp; tools</p>
             <h2 class="title">The toolkit behind <span class="accent">the work.</span></h2>
@@ -671,7 +671,7 @@
     <!-- EDUCATION & CERTIFICATIONS -->
     <section id="credentials" class="section">
       <div class="container">
-        <header class="section__head" data-reveal>
+        <header class="section__head">
           <div>
             <p class="eyebrow"><span class="eyebrow__dots" aria-hidden="true"></span>Education &amp; certifications</p>
             <h2 class="title">Learning that backs <span class="accent">the work.</span></h2>
@@ -700,7 +700,9 @@
     <!-- CONTACT -->
     <section id="contact" class="section section--tight">
       <div class="container">
-        <div class="cta" data-reveal>
+        <div class="cta" data-scale-in data-glow>
+          <div class="cta__orb" aria-hidden="true"><span class="cta__orb-dot"></span></div>
+          <div class="dark-dots" aria-hidden="true"></div>
           <p class="eyebrow eyebrow--dark"><span class="eyebrow__dots" aria-hidden="true"></span>Let&rsquo;s talk</p>
           <h2 class="cta__title">Have a change that needs <span class="accent">control?</span></h2>
           <p class="cta__lead">Open to configuration and data management roles.</p>
@@ -777,7 +779,7 @@
   </button>
 
   <script src="vendor/animejs/anime.umd.min.js?v=4.5.0"></script>
-  <script src="script.js?v=14"></script>
+  <script src="script.js?v=17"></script>
   <script src="dots.js?v=1"></script>
 </body>
 </html>
