@@ -2659,6 +2659,12 @@ button {
   color: var(--green);
 }
 
+.footer__big .sw {
+  display: inline-block;
+  overflow-x: clip;
+  white-space: nowrap;
+}
+
 .footer__bottom {
   display: flex;
   flex-wrap: wrap;

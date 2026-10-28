@@ -607,6 +607,60 @@
       };
       textObserver.observe(eyebrow);
     });
+
+    // Footer headline: every word scrambles into place inside a box locked
+    // to its final width, so the big lines never reflow mid-scramble
+    var big = doc.querySelector(".footer__big");
+    if (big) {
+      var bigWords = [];
+      var bigWalker = doc.createTreeWalker(big, NodeFilter.SHOW_TEXT);
+      var bigNodes = [];
+      while (bigWalker.nextNode()) bigNodes.push(bigWalker.currentNode);
+      bigNodes.forEach(function (node) {
+        var frag = doc.createDocumentFragment();
+        node.textContent.split(/(\s+)/).forEach(function (part) {
+          if (!part) return;
+          if (/^\s+$/.test(part)) {
+            frag.appendChild(doc.createTextNode(" "));
+            return;
+          }
+          var w = doc.createElement("span");
+          w.className = "sw";
+          w.textContent = part;
+          frag.appendChild(w);
+          bigWords.push(w);
+        });
+        node.parentNode.replaceChild(frag, node);
+      });
+
+      var bigBusy = false;
+      var lockWidths = function () {
+        if (bigBusy) return;
+        bigWords.forEach(function (w) {
+          w.style.width = "";
+        });
+        bigWords.forEach(function (w) {
+          w.style.width = w.getBoundingClientRect().width + "px";
+        });
+      };
+      if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(lockWidths);
+      else lockWidths();
+      window.addEventListener("resize", lockWidths);
+
+      var scrambleBig = function () {
+        if (bigBusy) return;
+        bigBusy = true;
+        bigWords.forEach(function (w, i) {
+          anime.animate(w, {
+            textContent: anime.scrambleText({ chars: "a-z", delay: i * 90, revealRate: 28, settleDuration: 500 }),
+            onComplete: i === bigWords.length - 1 ? function () { bigBusy = false; } : undefined
+          });
+        });
+      };
+      big.__reveal = scrambleBig;
+      big.addEventListener("pointerenter", scrambleBig);
+      textObserver.observe(big);
+    }
   } else {
     each(".hero__title, .hero__lede", function (el) {
       el.classList.add("is-split");
