@@ -2020,16 +2020,43 @@ button {
   overflow: hidden;
 }
 
-.band::after {
+.band > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Green dot texture for the dark surfaces */
+.dark-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  background-image: radial-gradient(rgba(61, 182, 99, 0.4) 1.2px, transparent 1.6px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse at 70% 30%, #000 0, transparent 70%);
+  mask-image: radial-gradient(ellipse at 70% 30%, #000 0, transparent 70%);
+}
+
+/* Soft green light that follows the pointer (script.js sets --gx/--gy) */
+[data-glow] {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-glow]::after {
   content: "";
   position: absolute;
-  right: -180px;
-  top: -220px;
-  width: 560px;
-  height: 560px;
-  border: 64px solid rgba(61, 182, 99, 0.07);
-  border-radius: 50%;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(640px circle at var(--gx, 50%) var(--gy, 50%), rgba(61, 182, 99, 0.26), rgba(61, 182, 99, 0.08) 38%, transparent 62%);
+  transition: opacity 0.7s;
+}
+
+[data-glow].is-lit::after {
+  opacity: 1;
 }
 
 .band .eyebrow,
@@ -2047,22 +2074,36 @@ button {
 
 .steps {
   position: relative;
+}
+
+.steps__list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px;
+  gap: 40px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.steps::before {
-  content: "";
+/* Connector between the numbers; the green fill follows scroll */
+.steps__line {
   position: absolute;
-  top: 36px;
+  top: 58px;
   left: 16.66%;
   right: 16.66%;
-  height: 1.5px;
-  background: linear-gradient(90deg, rgba(61, 182, 99, 0.7), rgba(61, 182, 99, 0.2));
+  height: 2px;
+  background: rgba(234, 244, 238, 0.12);
+}
+
+.steps__line i {
+  position: absolute;
+  inset: 0;
+  background: var(--green);
+  transform-origin: left;
+}
+
+.js .steps__line i {
+  transform: scaleX(0);
 }
 
 .step {
@@ -2073,19 +2114,44 @@ button {
   text-align: center;
 }
 
+.step__ring {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  background: var(--teal-2);
+  box-shadow: 0 0 0 1px rgba(234, 244, 238, 0.08), 0 24px 40px -14px rgba(0, 0, 0, 0.55);
+  transition: box-shadow 0.5s var(--ease);
+}
+
+.step.is-on .step__ring {
+  box-shadow: 0 0 0 1.5px rgba(61, 182, 99, 0.55), 0 24px 40px -14px rgba(0, 0, 0, 0.55);
+}
+
 .step__num {
   display: grid;
   place-items: center;
-  width: 72px;
-  height: 72px;
-  border: 1.5px solid rgba(61, 182, 99, 0.6);
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
-  background: var(--teal-2);
-  box-shadow: 0 0 0 10px var(--teal);
-  color: var(--white);
+  background: var(--teal);
+  box-shadow: inset 0 0 0 1px rgba(234, 244, 238, 0.1);
+  color: var(--on-dark);
   font-family: var(--f-display);
-  font-size: 1.375rem;
+  font-size: 1.875rem;
   font-weight: 700;
+  transition: background-color 0.4s, color 0.4s, box-shadow 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+/* Hovering a step lights its number */
+.step:hover .step__num {
+  background: var(--green);
+  color: var(--teal);
+  box-shadow: 0 0 0 6px rgba(61, 182, 99, 0.18), 0 0 40px rgba(61, 182, 99, 0.65);
+  transform: scale(1.04);
 }
 
 .step__title {
@@ -2104,12 +2170,12 @@ button {
 }
 
 @media (max-width: 760px) {
-  .steps {
+  .steps__list {
     grid-template-columns: minmax(0, 1fr);
-    gap: 40px;
+    gap: 44px;
   }
 
-  .steps::before {
+  .steps__line {
     display: none;
   }
 }
@@ -2134,6 +2200,11 @@ button {
   transform: translateY(-3px);
 }
 
+.kit__card.is-tilt {
+  transition: box-shadow 0.4s var(--ease);
+  will-change: transform;
+}
+
 .kit__icon {
   display: grid;
   place-items: center;
@@ -2144,6 +2215,13 @@ button {
   box-shadow: var(--shadow-soft);
   color: var(--green-ink);
   font-size: 1.5rem;
+  transition: background-color 0.35s, color 0.35s, box-shadow 0.45s var(--ease);
+}
+
+.kit__card:hover .kit__icon {
+  background: var(--green);
+  color: var(--teal);
+  box-shadow: 0 10px 26px -8px rgba(61, 182, 99, 0.7);
 }
 
 .kit__title {
@@ -2351,16 +2429,49 @@ button {
   isolation: isolate;
 }
 
-.cta::before {
-  content: "";
+.cta > :not(.cta__orb):not(.dark-dots) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Thick ring that drifts toward the pointer; its dot turns to face it */
+.cta__orb {
   position: absolute;
-  right: -120px;
-  top: -170px;
-  z-index: -1;
-  width: 480px;
-  height: 480px;
-  border: 60px solid rgba(61, 182, 99, 0.12);
+  right: -8%;
+  top: -34%;
+  z-index: 0;
+  width: 600px;
+  aspect-ratio: 1;
   border-radius: 50%;
+  background: radial-gradient(circle closest-side, transparent 0 44%, rgba(61, 182, 99, 0.2) 44.5% 88%, transparent 88.5%);
+  pointer-events: none;
+  transition: opacity 0.5s;
+  will-change: transform;
+}
+
+.cta.is-lit .cta__orb {
+  background: radial-gradient(circle closest-side, transparent 0 44%, rgba(61, 182, 99, 0.28) 44.5% 88%, transparent 88.5%);
+}
+
+.cta__orb-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 9%;
+  aspect-ratio: 1;
+  margin: -4.5% 0 0 -4.5%;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 28px rgba(61, 182, 99, 0.6);
+  transform: rotate(var(--a, 145deg)) translateX(367%);
+}
+
+@media (max-width: 760px) {
+  .cta__orb {
+    right: -40%;
+    top: -18%;
+    width: 380px;
+  }
 }
 
 .eyebrow--dark {
