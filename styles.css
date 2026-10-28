@@ -1134,24 +1134,28 @@ button {
   gap: 14px;
   align-items: center;
   width: 100%;
-  padding: 14px;
-  border: 1.5px solid transparent;
+  padding: 12px;
+  border: 3px solid transparent;
   border-radius: 20px;
   background: var(--card);
   box-shadow: var(--shadow-soft);
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.4s var(--ease), transform 0.4s var(--ease);
+  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.45s var(--ease), transform 0.4s var(--ease);
 }
 
-.xp__tab:hover {
+/* Hover: an ambient green glow around the pill */
+.xp__tab:hover,
+.xp__tab:focus-visible {
   transform: translateX(4px);
+  box-shadow: 0 0 0 1px rgba(61, 182, 99, 0.3), 0 12px 36px -4px rgba(61, 182, 99, 0.5);
 }
 
+/* Selected: thick green outline on a light green fill */
 .xp__tab[aria-selected="true"] {
-  border-color: rgba(61, 182, 99, 0.55);
-  background: var(--white);
-  box-shadow: 0 16px 32px -18px rgba(35, 135, 74, 0.5);
+  border-color: var(--green);
+  background: #e6f5eb;
+  box-shadow: 0 14px 36px -10px rgba(61, 182, 99, 0.5);
   transform: none;
 }
 
@@ -1189,12 +1193,28 @@ button {
   border-radius: 50%;
   background: var(--paper-2);
   color: var(--muted);
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.4s var(--ease);
 }
 
+.xp__go .icon {
+  transition: transform 0.35s var(--ease);
+}
+
+.xp__tab:hover .xp__go,
+.xp__tab:focus-visible .xp__go,
 .xp__tab[aria-selected="true"] .xp__go {
   background: var(--green);
   color: var(--teal);
+}
+
+/* The arrow lights up green while the pill is hovered */
+.xp__tab:hover .xp__go,
+.xp__tab:focus-visible .xp__go {
+  box-shadow: 0 0 0 5px rgba(61, 182, 99, 0.18), 0 0 20px rgba(61, 182, 99, 0.65);
+}
+
+.xp__tab:hover .xp__go .icon {
+  transform: translateX(2px);
 }
 
 .xp__stage {
@@ -1409,18 +1429,6 @@ button {
   border-radius: 22px;
   background: var(--paper);
   font-size: 0.875rem;
-}
-
-.mock__tag {
-  justify-self: end;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: var(--white);
-  color: var(--muted);
-  font-family: var(--f-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
 .mock__row {
@@ -1710,6 +1718,18 @@ button {
 
 .proj:hover .proj__shot {
   transform: translate(-6px, -6px);
+}
+
+/* Cursor tilt (script.js drives the transforms frame by frame) */
+.proj.is-tilt {
+  transition: box-shadow 0.5s var(--ease);
+  will-change: transform;
+}
+
+.proj.is-tilt .proj__shot,
+.proj.is-tilt .flow {
+  transition: none;
+  will-change: transform;
 }
 
 .proj__chip {

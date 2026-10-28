@@ -265,7 +265,7 @@
   onTopScroll();
 
   // ---------- Pointer spotlight on cards ----------
-  var spotTargets = ".kit__card, .edu, .cert, .xp__stage";
+  var spotTargets = ".kit__card, .edu, .cert, .xp__stage, .proj:not(.proj--soon)";
   each(spotTargets, function (el) {
     el.classList.add("spot");
   });
@@ -280,6 +280,51 @@
     },
     { passive: true }
   );
+
+  // ---------- Project cards tilt and drift toward the cursor ----------
+  if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    each(".proj:not(.proj--soon)", function (card) {
+      var inner = card.querySelector(".proj__shot, .flow");
+      var now = { rx: 0, ry: 0, x: 0, y: 0, lift: 0 };
+      var goal = { rx: 0, ry: 0, x: 0, y: 0, lift: 0 };
+      var raf = 0;
+      card.classList.add("is-tilt");
+
+      var step = function () {
+        var moving = false;
+        Object.keys(now).forEach(function (k) {
+          now[k] += (goal[k] - now[k]) * 0.12;
+          if (Math.abs(goal[k] - now[k]) > 0.01) moving = true;
+        });
+        card.style.transform =
+          "perspective(1000px) translate3d(" + now.x.toFixed(2) + "px," + (now.y + now.lift).toFixed(2) + "px,0)" +
+          " rotateX(" + now.rx.toFixed(2) + "deg) rotateY(" + now.ry.toFixed(2) + "deg)";
+        // the screenshot or diagram drifts the other way for a little depth
+        if (inner) inner.style.transform = "translate3d(" + (-now.ry * 1.2).toFixed(2) + "px," + (now.rx * 1.2).toFixed(2) + "px,0)";
+        raf = moving ? requestAnimationFrame(step) : 0;
+      };
+      var kick = function () {
+        if (!raf) raf = requestAnimationFrame(step);
+      };
+
+      card.addEventListener("pointermove", function (e) {
+        if (e.pointerType === "touch") return;
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        goal.ry = px * 12;
+        goal.rx = -py * 10;
+        goal.x = px * 12;
+        goal.y = py * 10;
+        goal.lift = -6;
+        kick();
+      });
+      card.addEventListener("pointerleave", function () {
+        goal.rx = goal.ry = goal.x = goal.y = goal.lift = 0;
+        kick();
+      });
+    });
+  }
 
   // ---------- Custom cursor (mouse and pen only) ----------
   if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
