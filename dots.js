@@ -73,19 +73,48 @@
     return u * u + v * v <= 1;
   }
 
+  // Angle of (x, y) around (cx, cy) in degrees, y pointing down
+  function angle(x, y, cx, cy) {
+    return (Math.atan2(y - cy, x - cx) * 180) / Math.PI;
+  }
+
+  // On a ring of radius r between angles a0 and a1 (a1 may pass 180)
+  function onArc(x, y, cx, cy, r, a0, a1, w) {
+    var a = angle(x, y, cx, cy);
+    if (a1 > 180 && a < a0) a += 360;
+    if (a < a0 || a > a1) return false;
+    return Math.abs(dist(x, y, cx, cy) - r) <= w;
+  }
+
   // ---------- Shapes ----------
   var WING = [[126, 112], [154, 112], [262, 168], [262, 184], [154, 156], [126, 156], [18, 184], [18, 168]];
   var TAIL = [[130, 212], [150, 212], [200, 242], [200, 254], [150, 238], [130, 238], [80, 254], [80, 242]];
-  var PULSE = [[6, 152], [76, 152], [94, 118], [114, 192], [134, 90], [152, 170], [166, 152], [274, 152]];
   var CABIN = [[62, 144], [98, 90], [188, 90], [228, 144]];
   var REAR_WINDOW = [[84, 140], [108, 102], [138, 102], [138, 140]];
   var FRONT_WINDOW = [[148, 102], [182, 102], [208, 140], [148, 140]];
 
-  function heart(x, y) {
-    var u = (x - 140) / 104;
-    var v = (150 - y) / 104 + 0.08;
-    var a = u * u + v * v - 1;
-    return a * a * a - u * u * v * v * v <= 0;
+  // Behind-the-ear hearing device: a curved body on a wide arc, an ear hook
+  // over the top, a thin tube down to the ear dome, and sound waves
+  var BODY = { cx: 74, cy: 150, r: 130, a0: -40, a1: 36 };
+  function bodyEnd(a) {
+    var t = (a * Math.PI) / 180;
+    return [BODY.cx + BODY.r * Math.cos(t), BODY.cy + BODY.r * Math.sin(t)];
+  }
+  function bodyWidth(a) {
+    return 25 + ((a - BODY.a0) / (BODY.a1 - BODY.a0)) * 9;
+  }
+  var BODY_TOP = bodyEnd(BODY.a0);
+  var BODY_BOTTOM = bodyEnd(BODY.a1);
+  var HOOK = { cx: BODY_TOP[0] - 42, cy: BODY_TOP[1] + 2, r: 42 };
+  var TUBE = [[HOOK.cx - HOOK.r, HOOK.cy], [HOOK.cx - HOOK.r - 4, HOOK.cy + 40], [HOOK.cx - HOOK.r - 6, HOOK.cy + 78]];
+  var DOME = { x: HOOK.cx - HOOK.r - 6, y: HOOK.cy + 98 };
+  var BUTTON = bodyEnd(-19);
+
+  function inHearingBody(x, y) {
+    var a = Math.max(BODY.a0, Math.min(BODY.a1, angle(x, y, BODY.cx, BODY.cy)));
+    if (onArc(x, y, BODY.cx, BODY.cy, BODY.r, BODY.a0, BODY.a1, bodyWidth(a))) return true;
+    return dist(x, y, BODY_TOP[0], BODY_TOP[1]) <= bodyWidth(BODY.a0) ||
+      dist(x, y, BODY_BOTTOM[0], BODY_BOTTOM[1]) <= bodyWidth(BODY.a1);
   }
 
   var SHAPES = [
@@ -103,12 +132,15 @@
     {
       name: "Medical device",
       fn: function (x, y) {
-        if (inRRect(x, y, 234, 12, 250, 48, 4) || inRRect(x, y, 224, 22, 260, 38, 4)) return BROWN;
-        var h = heart(x, y);
-        if (h && nearPath(x, y, PULSE, 7)) return null;
-        if (!h && nearPath(x, y, PULSE, 4.5)) return INK;
-        if (h && dist(x, y, 92, 80) <= 15) return LIGHT;
-        return h ? ramp(y) : null;
+        if (dist(x, y, BUTTON[0] + 6, BUTTON[1]) <= 8) return BROWN;
+        if (inRRect(x, y, BODY.cx + BODY.r - 4, 152, BODY.cx + BODY.r + 10, 188, 5)) return PEACH;
+        if (inHearingBody(x, y) || onArc(x, y, HOOK.cx, HOOK.cy, HOOK.r, -180, 0, 10)) return ramp(y);
+        if (nearPath(x, y, TUBE, 5)) return LIGHT;
+        if (inEllipse(x, y, DOME.x, DOME.y, 15, 19)) return PEACH;
+        for (var k = 0; k < 3; k++) {
+          if (onArc(x, y, DOME.x, DOME.y, 30 + k * 18, 142, 218, 4)) return k === 0 ? GREEN : LIGHT;
+        }
+        return null;
       }
     },
     {
