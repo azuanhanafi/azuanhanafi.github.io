@@ -87,8 +87,17 @@
   }
 
   // ---------- Shapes ----------
-  var WING = [[126, 112], [154, 112], [262, 168], [262, 184], [154, 156], [126, 156], [18, 184], [18, 168]];
-  var TAIL = [[130, 212], [150, 212], [200, 242], [200, 254], [150, 238], [130, 238], [80, 254], [80, 242]];
+  // Fighter jet, top view: the right half is drawn, the left mirrors it
+  function mirror(pts) {
+    return pts.map(function (p) {
+      return [280 - p[0], p[1]];
+    });
+  }
+  var FUSELAGE = [[140, 8], [146, 30], [151, 66], [153, 110], [153, 206], [151, 240], [129, 240], [127, 206], [127, 110], [129, 66], [134, 30]];
+  var WING_R = [[152, 128], [250, 186], [250, 200], [152, 198]];
+  var STRAKE_R = [[152, 86], [164, 126], [152, 132]];
+  var STAB_R = [[152, 216], [200, 244], [200, 256], [152, 250]];
+  var JET = [FUSELAGE, WING_R, mirror(WING_R), STRAKE_R, mirror(STRAKE_R), STAB_R, mirror(STAB_R)];
   var CABIN = [[62, 144], [98, 90], [188, 90], [228, 144]];
   var REAR_WINDOW = [[84, 140], [108, 102], [138, 102], [138, 140]];
   var FRONT_WINDOW = [[148, 102], [182, 102], [208, 140], [148, 140]];
@@ -121,11 +130,13 @@
     {
       name: "Aerospace",
       fn: function (x, y) {
-        if (inEllipse(x, y, 140, 60, 7, 13)) return INK;
-        if (inRRect(x, y, 72, 150, 92, 184, 8) || inRRect(x, y, 188, 150, 208, 184, 8)) return PEACH;
-        if (dist(x, y, 20, 177) <= 6) return BROWN;
-        if (dist(x, y, 260, 177) <= 6) return GREEN;
-        if (nearSeg(x, y, 140, 30, 140, 248, 15) || inPoly(x, y, WING) || inPoly(x, y, TAIL)) return ramp(y);
+        if (inEllipse(x, y, 140, 62, 7, 19)) return LIGHT; // canopy
+        if (nearSeg(x, y, 260, 160, 260, 214, 4.5) || nearSeg(x, y, 20, 160, 20, 214, 4.5)) return PEACH; // wingtip missiles
+        if (nearSeg(x, y, 158, 200, 170, 246, 3.8) || nearSeg(x, y, 122, 200, 110, 246, 3.8)) return INK; // twin tails
+        if (inRRect(x, y, 128, 240, 139, 262, 4) || inRRect(x, y, 141, 240, 152, 262, 4)) return BROWN; // nozzles
+        for (var j = 0; j < JET.length; j++) {
+          if (inPoly(x, y, JET[j])) return ramp(y);
+        }
         return null;
       }
     },
