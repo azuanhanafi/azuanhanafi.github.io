@@ -1,160 +1,194 @@
-// Footer year
-document.getElementById("year").textContent = new Date().getFullYear();
-
-// Build the email link at runtime so the address isn't sitting in the
-// static HTML for scrapers/bots to harvest.
 (function () {
-  var link = document.getElementById("email-link");
-  if (!link) return;
+  "use strict";
+
+  var doc = document;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function each(selector, fn, scope) {
+    Array.prototype.forEach.call((scope || doc).querySelectorAll(selector), fn);
+  }
+
+  // Footer year
+  each("[data-year]", function (el) {
+    el.textContent = new Date().getFullYear();
+  });
+
+  // Email links - address is assembled at runtime to deter simple scrapers
   var user = "azuanhanafi23";
   var domain = "gmail.com";
-  link.href = "mailto:" + user + "@" + domain;
-})();
-
-// Theme toggle with localStorage persistence
-(function () {
-  var root = document.documentElement;
-  var toggle = document.getElementById("theme-toggle");
-  var stored = null;
-
-  try {
-    stored = localStorage.getItem("theme");
-  } catch (e) {
-    /* storage blocked — fall back to system theme */
-  }
-
-  if (stored === "light" || stored === "dark") {
-    root.setAttribute("data-theme", stored);
-  }
-
-  function current() {
-    var attr = root.getAttribute("data-theme");
-    if (attr) return attr;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  }
-
-  toggle.addEventListener("click", function () {
-    var next = current() === "dark" ? "light" : "dark";
-    root.classList.add("theme-transition");
-    root.setAttribute("data-theme", next);
-    try {
-      localStorage.setItem("theme", next);
-    } catch (e) {
-      /* ignore */
-    }
-    window.setTimeout(function () {
-      root.classList.remove("theme-transition");
-    }, 460);
+  each("[data-email]", function (a) {
+    a.href = "mailto:" + user + "@" + domain;
   });
-})();
 
-// Rotating hero title — cycles through true facets of the same role
-(function () {
-  var el = document.getElementById("rotating-title");
-  if (!el) return;
-
-  var reduceMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
-  if (reduceMQ.matches) return;
-
-  var variants = [
-    "Configuration & Data Management Specialist",
-    "Change Control & Baseline Management Specialist",
-    "Configuration Status Accounting Specialist"
-  ];
-  var i = 0;
-
-  setInterval(function () {
-    el.classList.add("is-fading");
-    setTimeout(function () {
-      i = (i + 1) % variants.length;
-      el.textContent = variants[i];
-      el.classList.remove("is-fading");
-    }, 300);
-  }, 3200);
-})();
-
-// Expertise tabs — click a category to show its skill panel
-(function () {
-  var tabs = document.querySelectorAll(".expertise__tab");
-  if (!tabs.length) return;
-  var panels = document.querySelectorAll(".expertise__panel");
-
-  tabs.forEach(function (tab) {
-    tab.addEventListener("click", function () {
-      tabs.forEach(function (t) {
-        t.classList.remove("is-active");
-        t.setAttribute("aria-selected", "false");
+  // Kuala Lumpur clock
+  var clocks = doc.querySelectorAll("[data-clock]");
+  if (clocks.length && window.Intl) {
+    var clockFmt = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Kuala_Lumpur",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
+    var tickClock = function () {
+      var now = clockFmt.format(new Date());
+      Array.prototype.forEach.call(clocks, function (c) {
+        c.textContent = now;
       });
-      panels.forEach(function (p) {
-        p.classList.remove("is-active");
-        p.hidden = true;
-      });
+    };
+    tickClock();
+    setInterval(tickClock, 15000);
+  }
 
-      tab.classList.add("is-active");
-      tab.setAttribute("aria-selected", "true");
-      var panel = document.getElementById(tab.getAttribute("aria-controls"));
-      if (panel) {
-        panel.hidden = false;
-        panel.classList.add("is-active");
-      }
+  // Tenure in the current role, counted in whole months like a CV ("Apr - Oct" = 7MO)
+  each("[data-since]", function (el) {
+    var parts = el.getAttribute("data-since").split("-");
+    var now = new Date();
+    var months = (now.getFullYear() - Number(parts[0])) * 12 + (now.getMonth() + 1 - Number(parts[1])) + 1;
+    if (!(months > 0)) return;
+    var y = Math.floor(months / 12);
+    var m = months % 12;
+    el.textContent = [y ? y + "Y" : "", m ? m + "MO" : ""].join(" ").trim();
+  });
+
+  // Last updated (from the page's Last-Modified header)
+  each("[data-updated]", function (el) {
+    var d = new Date(doc.lastModified);
+    if (isNaN(d.getTime())) return;
+    el.textContent = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    el.setAttribute("datetime", d.toISOString().slice(0, 10));
+  });
+
+  // Header: solid background once the page scrolls
+  var header = doc.querySelector(".site-header");
+  var onScroll = function () {
+    header.classList.toggle("is-scrolled", window.scrollY > 8);
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Mobile menu
+  var toggle = doc.querySelector(".nav__toggle");
+  var toggleLabel = doc.querySelector(".nav__toggle-label");
+  var menu = doc.getElementById("nav-menu");
+
+  function setMenu(open, returnFocus) {
+    header.classList.toggle("is-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggleLabel.textContent = open ? "Close" : "Menu";
+    if (!open && returnFocus) toggle.focus();
+  }
+
+  if (toggle && menu) {
+    toggle.addEventListener("click", function () {
+      setMenu(toggle.getAttribute("aria-expanded") !== "true");
+    });
+    menu.addEventListener("click", function (e) {
+      if (e.target.closest("a")) setMenu(false);
+    });
+    doc.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && header.classList.contains("is-open")) setMenu(false, true);
+    });
+    doc.addEventListener("click", function (e) {
+      if (header.classList.contains("is-open") && !header.contains(e.target)) setMenu(false);
+    });
+    window.matchMedia("(min-width: 961px)").addEventListener("change", function (e) {
+      if (e.matches) setMenu(false);
+    });
+  }
+
+  // Project dialogs
+  each("[data-open]", function (btn) {
+    var dialog = doc.getElementById(btn.getAttribute("data-open"));
+    if (!dialog || typeof dialog.showModal !== "function") return;
+    btn.addEventListener("click", function () {
+      dialog.showModal();
     });
   });
-})();
-
-// Scroll-spy — highlight the nav link for the section currently in view
-(function () {
-  if (!("IntersectionObserver" in window)) return;
-
-  var navLinks = document.querySelectorAll('.nav__links a[href^="#"]');
-  if (!navLinks.length) return;
-
-  var sections = [];
-  navLinks.forEach(function (link) {
-    var section = document.getElementById(link.getAttribute("href").slice(1));
-    if (section) sections.push({ link: link, section: section });
-  });
-  if (!sections.length) return;
-
-  function setActive(link) {
-    navLinks.forEach(function (l) {
-      l.classList.remove("is-active");
-      l.removeAttribute("aria-current");
+  each("dialog.modal", function (dialog) {
+    // A click on the backdrop lands on the dialog element itself
+    dialog.addEventListener("click", function (e) {
+      if (e.target === dialog) dialog.close();
     });
-    link.classList.add("is-active");
-    link.setAttribute("aria-current", "page");
+    each("[data-close]", function (b) {
+      b.addEventListener("click", function () {
+        dialog.close();
+      });
+    }, dialog);
+  });
+
+  if (!("IntersectionObserver" in window)) {
+    each("[data-reveal]", function (el) {
+      el.classList.add("is-in");
+    });
+    return;
   }
 
-  var observer = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var match = sections.find(function (s) {
-          return s.section === entry.target;
+  // Reveal on scroll
+  if (reduceMotion) {
+    each("[data-reveal]", function (el) {
+      el.classList.add("is-in");
+    });
+  } else {
+    var revealer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-in");
+          revealer.unobserve(entry.target);
         });
-        if (match) setActive(match.link);
-      });
-    },
-    { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
-  );
+      },
+      { rootMargin: "0px 0px -8% 0px" }
+    );
+    each("[data-reveal]", function (el) {
+      revealer.observe(el);
+    });
+  }
 
-  sections.forEach(function (s) {
-    observer.observe(s.section);
-  });
+  // Highlight the current item in a list of in-page links
+  function spy(links, rootMargin, fallbackToLast) {
+    var targets = links
+      .map(function (a) {
+        return doc.querySelector(a.getAttribute("href"));
+      })
+      .filter(Boolean);
+    if (!targets.length) return;
 
-  // Fallback: the last section can't always be scrolled far enough to
-  // cross the observer's trigger zone, so force it active at page bottom.
-  var ticking = false;
-  window.addEventListener(
-    "scroll",
-    function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        var atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-        if (atBottom) setActive(sections[sections.length - 1].link);
-        ticking = false;
+    function setActive(id) {
+      links.forEach(function (a) {
+        var on = a.getAttribute("href") === "#" + id;
+        a.classList.toggle("is-active", on);
+        if (on) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
       });
-    },
-    { passive: true }
-  );
+    }
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: rootMargin, threshold: 0 }
+    );
+    targets.forEach(function (t) {
+      observer.observe(t);
+    });
+
+    window.addEventListener(
+      "scroll",
+      function () {
+        // Above the first target nothing is current
+        if (targets[0].getBoundingClientRect().top > window.innerHeight * 0.5) setActive("");
+        // The last section can't always reach the observer band
+        if (fallbackToLast) {
+          var atBottom = window.innerHeight + window.scrollY >= doc.documentElement.scrollHeight - 2;
+          if (atBottom) setActive(targets[targets.length - 1].id);
+        }
+      },
+      { passive: true }
+    );
+  }
+
+  spy(Array.prototype.slice.call(doc.querySelectorAll(".nav__links a[href^='#']")), "-40% 0px -55% 0px", true);
+  spy(Array.prototype.slice.call(doc.querySelectorAll(".xp__index a[href^='#']")), "-30% 0px -60% 0px", false);
 })();
