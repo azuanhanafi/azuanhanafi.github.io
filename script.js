@@ -530,6 +530,89 @@
     });
   }
 
+  // ---------- Text: titles rise line by line, leads follow, eyebrows scramble ----------
+  var anime = window.anime;
+  if (anime && anime.splitText && anime.scrambleText && !reduceMotion && "IntersectionObserver" in window) {
+    var textObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          textObserver.unobserve(entry.target);
+          if (entry.target.__reveal) entry.target.__reveal();
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px" }
+    );
+
+    var TITLE = {
+      lines: { wrap: "clip", class: "ln" },
+      hidden: { translateY: "110%" },
+      show: { translateY: ["110%", "0%"], duration: 1100, delay: anime.stagger(110), ease: "outExpo" }
+    };
+    var LEAD = {
+      lines: { class: "ln" },
+      hidden: { opacity: 0, translateY: "0.6em" },
+      show: { opacity: [0, 1], translateY: ["0.6em", "0em"], duration: 900, delay: anime.stagger(80, { start: 200 }), ease: "outQuart" }
+    };
+
+    var splitReveal = function (el, preset) {
+      var seen = false;
+      var done = false;
+      var splitter = anime.splitText(el, { lines: preset.lines });
+      var play = function (lines) {
+        done = true;
+        anime.animate(lines, preset.show);
+      };
+      // Runs after every split, including re-splits when the width changes
+      splitter.addEffect(function (self) {
+        el.classList.add("is-split");
+        if (done) return;
+        if (seen) play(self.lines);
+        else anime.utils.set(self.lines, preset.hidden);
+      });
+      el.__reveal = function () {
+        seen = true;
+        if (!done && splitter.ready && splitter.lines.length) play(splitter.lines);
+      };
+      textObserver.observe(el);
+    };
+
+    each(".hero__title, .section .title, .cta__title", function (el) {
+      splitReveal(el, TITLE);
+    });
+    each(".hero__lede, .section__lead:not(.section__lead--note), .section__lead--note > span, .cta__lead", function (el) {
+      splitReveal(el, LEAD);
+    });
+
+    each(".eyebrow", function (eyebrow) {
+      if (eyebrow.closest("dialog")) return;
+      var dots = eyebrow.querySelector(".eyebrow__dots");
+      var label = eyebrow.textContent.trim();
+      // Screen readers get the real label; the scramble runs on a visual copy
+      Array.prototype.slice.call(eyebrow.childNodes).forEach(function (n) {
+        if (n !== dots) eyebrow.removeChild(n);
+      });
+      var sr = doc.createElement("span");
+      sr.className = "sr-only";
+      sr.textContent = label;
+      var shown = doc.createElement("span");
+      shown.setAttribute("aria-hidden", "true");
+      shown.textContent = label;
+      eyebrow.appendChild(sr);
+      eyebrow.appendChild(shown);
+      eyebrow.__reveal = function () {
+        anime.animate(shown, {
+          textContent: anime.scrambleText({ chars: "A-Z0-9", revealRate: 45, settleDuration: 420, cursor: "_" })
+        });
+      };
+      textObserver.observe(eyebrow);
+    });
+  } else {
+    each(".hero__title, .hero__lede", function (el) {
+      el.classList.add("is-split");
+    });
+  }
+
   // ---------- Reveal on scroll ----------
   if (!("IntersectionObserver" in window) || reduceMotion) {
     each("[data-reveal]", function (el) {

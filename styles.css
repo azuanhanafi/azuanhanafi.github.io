@@ -935,7 +935,27 @@ button {
   background: var(--green);
 }
 
+/* Split text (script.js): each line sits in a clipped wrapper; extra padding
+   keeps descenders inside the clip without changing the line spacing */
+.ln {
+  padding-block: 0.06em 0.16em;
+  margin-block: -0.06em -0.16em;
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  /* Hide the hero title and lede until they are split, with a fallback */
+  .js .hero__copy > .hero__title,
+  .js .hero__copy > .hero__lede {
+    opacity: 0;
+    animation: show-late 0s 2.5s forwards;
+  }
+
+  .js .hero__copy > .hero__title.is-split,
+  .js .hero__copy > .hero__lede.is-split {
+    opacity: 1;
+    animation: none;
+  }
+
   .scroll-hint__mouse::after {
     animation: wheel 1.8s var(--ease) infinite;
   }
@@ -948,6 +968,10 @@ button {
   .hero__copy > :nth-child(3) { animation-delay: 0.16s; }
   .hero__copy > :nth-child(4) { animation-delay: 0.24s; }
   .hero__copy > :nth-child(5) { animation-delay: 0.32s; }
+}
+
+@keyframes show-late {
+  to { opacity: 1; }
 }
 
 @keyframes wheel {
