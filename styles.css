@@ -942,33 +942,31 @@ button {
   margin-block: -0.06em -0.16em;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  /* Hide the hero title and lede until they are split, with a fallback */
-  .js .hero__copy > .hero__title,
-  .js .hero__copy > .hero__lede {
-    opacity: 0;
-    animation: show-late 0s 2.5s forwards;
-  }
-
-  .js .hero__copy > .hero__title.is-split,
-  .js .hero__copy > .hero__lede.is-split {
-    opacity: 1;
-    animation: none;
-  }
-
-  .scroll-hint__mouse::after {
-    animation: wheel 1.8s var(--ease) infinite;
-  }
-
-  .hero__copy > * {
-    animation: rise 1s var(--ease) both;
-  }
-
-  .hero__copy > :nth-child(2) { animation-delay: 0.08s; }
-  .hero__copy > :nth-child(3) { animation-delay: 0.16s; }
-  .hero__copy > :nth-child(4) { animation-delay: 0.24s; }
-  .hero__copy > :nth-child(5) { animation-delay: 0.32s; }
+/* Hide the hero title and lede until they are split, with a fallback */
+.js .hero__copy > .hero__title,
+.js .hero__copy > .hero__lede {
+  opacity: 0;
+  animation: show-late 0s 2.5s forwards;
 }
+
+.js .hero__copy > .hero__title.is-split,
+.js .hero__copy > .hero__lede.is-split {
+  opacity: 1;
+  animation: none;
+}
+
+.scroll-hint__mouse::after {
+  animation: wheel 1.8s var(--ease) infinite;
+}
+
+.hero__copy > * {
+  animation: rise 1s var(--ease) both;
+}
+
+.hero__copy > :nth-child(2) { animation-delay: 0.08s; }
+.hero__copy > :nth-child(3) { animation-delay: 0.16s; }
+.hero__copy > :nth-child(4) { animation-delay: 0.24s; }
+.hero__copy > :nth-child(5) { animation-delay: 0.32s; }
 
 @keyframes show-late {
   to { opacity: 1; }
@@ -1055,17 +1053,15 @@ button {
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .js [data-reveal] {
-    opacity: 0;
-    transform: translateY(26px);
-    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
-  }
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
 
-  .js [data-reveal].is-in {
-    opacity: 1;
-    transform: none;
-  }
+.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
 }
 
 /* Pointer spotlight on raised cards */
@@ -1122,12 +1118,6 @@ button {
 
 .statement .textlink {
   margin-top: 40px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .js .statement__text .w {
-    opacity: 1;
-  }
 }
 
 /* ---------- Experience ---------- */
@@ -1284,10 +1274,8 @@ button {
   gap: 8px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .js .xp__panel:not([hidden]) {
-    animation: rise 0.6s var(--ease) both;
-  }
+.js .xp__panel:not([hidden]) {
+  animation: rise 0.6s var(--ease) both;
 }
 
 @media (max-width: 900px) {
@@ -1412,10 +1400,8 @@ button {
   padding: clamp(28px, 3vw, 44px);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .js .acc__item.is-open .acc__body {
-    animation: fade-in 0.6s 0.2s var(--ease) both;
-  }
+.js .acc__item.is-open .acc__body {
+  animation: fade-in 0.6s 0.2s var(--ease) both;
 }
 
 @keyframes fade-in {
@@ -1933,10 +1919,8 @@ button {
   backdrop-filter: blur(6px);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .modal[open] {
-    animation: rise 0.45s var(--ease);
-  }
+.modal[open] {
+  animation: rise 0.45s var(--ease);
 }
 
 .modal__inner {
@@ -2321,10 +2305,8 @@ button {
   background: var(--peach);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .marquee__track {
-    animation: marquee 48s linear infinite;
-  }
+.marquee__track {
+  animation: marquee 48s linear infinite;
 }
 
 @keyframes marquee {
@@ -2823,19 +2805,4 @@ button {
 
 .cursor-dot.on-dark {
   background: var(--on-dark);
-}
-
-/* ---------- Reduced motion ---------- */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
 }

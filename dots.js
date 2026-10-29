@@ -10,7 +10,6 @@
   if (!canvas || !canvas.getContext || !hero || !stage) return;
 
   var ctx = canvas.getContext("2d");
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // ---------- Palette ----------
   var INK = "#231F20";
@@ -310,7 +309,6 @@
         });
       }
     }
-    if (reduce) draw(performance.now());
   }
 
   // ---------- Label pill ----------
@@ -323,7 +321,7 @@
       b.classList.toggle("is-on", i === k);
       b.style.removeProperty("--p");
     });
-    if (window.anime && !reduce && !quiet) {
+    if (window.anime && !quiet) {
       window.anime.animate(labelName, { translateY: ["70%", "0%"], opacity: [0, 1], duration: 600, ease: "outExpo" });
     }
   }
@@ -331,13 +329,6 @@
   // ---------- Morph ----------
   function morphTo(k, now) {
     k = (k + SHAPES.length) % SHAPES.length;
-    if (reduce) {
-      cur = k;
-      setTargets(k);
-      updateLabel(k);
-      draw(performance.now());
-      return;
-    }
     if (morphing || k === cur || !L) return;
     var shape = targets[k];
     next = k;
@@ -381,15 +372,13 @@
     // Ambient dots drift across the whole hero
     for (i = 0; i < ambient.length; i++) {
       p = ambient[i];
-      if (!reduce) {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < -10) p.x = W + 10;
-        if (p.x > W + 10) p.x = -10;
-        if (p.y < -10) p.y = H + 10;
-        if (p.y > H + 10) p.y = -10;
-      }
-      ctx.globalAlpha = reduce ? p.a : p.a * Math.min(1, (now - introStart) / 1400);
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -10) p.x = W + 10;
+      if (p.x > W + 10) p.x = -10;
+      if (p.y < -10) p.y = H + 10;
+      if (p.y > H + 10) p.y = -10;
+      ctx.globalAlpha = p.a * Math.min(1, (now - introStart) / 1400);
       ctx.fillStyle = p.c;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, 6.2832);
@@ -401,8 +390,8 @@
     var mt = (now - morphStart) / 1000;
 
     // Tilt toward the pointer, plus a slow idle sway
-    var yawGoal = reduce ? 0 : view.nx * 0.6 + view.drag + Math.sin(t * 0.5) * 0.22;
-    var pitchGoal = reduce ? 0 : -view.ny * 0.4 + Math.sin(t * 0.37) * 0.08;
+    var yawGoal = view.nx * 0.6 + view.drag + Math.sin(t * 0.5) * 0.22;
+    var pitchGoal = -view.ny * 0.4 + Math.sin(t * 0.37) * 0.08;
     view.yaw += (yawGoal - view.yaw) * 0.07;
     view.pitch += (pitchGoal - view.pitch) * 0.07;
     var cy = Math.cos(view.yaw);
@@ -418,107 +407,100 @@
       var moving = false;
       var f = 1;
 
-      if (reduce) {
-        p.x = p.tx;
-        p.y = p.ty;
-        p.a = p.ta;
+      var lx = p.tx - L.cx;
+      var ly = p.ty - L.cy;
+      var lz = p.tz || 0;
+
+      if (morphing) {
+        var r = (mt - p.md) / MORPH_DUR;
+        if (r >= 1) {
+          lx = p.nx;
+          ly = p.ny;
+          lz = p.nz;
+          p.c = p.nc;
+          p.ta = p.na;
+        } else if (r > 0) {
+          moving = true;
+          var s = r * r * (3 - 2 * r);
+          var w = Math.sin(r * Math.PI);
+          var dx = p.nx - p.fx;
+          var dy = p.ny - p.fy;
+          // travel along an arc and pop toward the viewer mid-flight
+          lx = p.fx + dx * s - dy * 0.3 * w;
+          ly = p.fy + dy * s + dx * 0.3 * w;
+          lz = p.fz + (p.nz - p.fz) * s + L.size * 0.3 * w;
+          p.c = r < 0.5 ? p.fc : p.nc;
+          p.ta = r < 0.5 ? p.fa : p.na;
+        }
+      }
+
+      // 3D: yaw around the vertical axis, pitch around the horizontal one
+      var x1 = lx * cy + lz * sy;
+      var z1 = -lx * sy + lz * cy;
+      var y1 = ly * cp - z1 * sp;
+      var z2 = ly * sp + z1 * cp;
+      f = D / (D - z2);
+      var gx = L.cx + x1 * f + p.sx * scrollP;
+      var gy = L.cy + y1 * f + p.sy * scrollP;
+      p.f = f;
+
+      if (moving) {
+        p.vx = gx - p.x;
+        p.vy = gy - p.y;
+        p.x = gx;
+        p.y = gy;
+        p.e = 1;
+        p.a += (p.ta - p.a) * 0.18;
+      } else if (p.done) {
+        // spring home, part around the cursor
+        p.vx += (gx - p.x) * 0.045;
+        p.vy += (gy - p.y) * 0.045;
+        var mx = p.x - mouse.x;
+        var my = p.y - mouse.y;
+        var md = mx * mx + my * my;
+        if (md < R * R) {
+          var d = Math.sqrt(md) + 0.01;
+          var push = (1 - d / R) * 2.6;
+          p.vx += (mx / d) * push;
+          p.vy += (my / d) * push;
+        }
+        p.vx *= 0.82;
+        p.vy *= 0.82;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.a += (p.ta - p.a) * 0.08;
         p.e = 1;
       } else {
-        var lx = p.tx - L.cx;
-        var ly = p.ty - L.cy;
-        var lz = p.tz || 0;
-
-        if (morphing) {
-          var r = (mt - p.md) / MORPH_DUR;
-          if (r >= 1) {
-            lx = p.nx;
-            ly = p.ny;
-            lz = p.nz;
-            p.c = p.nc;
-            p.ta = p.na;
-          } else if (r > 0) {
-            moving = true;
-            var s = r * r * (3 - 2 * r);
-            var w = Math.sin(r * Math.PI);
-            var dx = p.nx - p.fx;
-            var dy = p.ny - p.fy;
-            // travel along an arc and pop toward the viewer mid-flight
-            lx = p.fx + dx * s - dy * 0.3 * w;
-            ly = p.fy + dy * s + dx * 0.3 * w;
-            lz = p.fz + (p.nz - p.fz) * s + L.size * 0.3 * w;
-            p.c = r < 0.5 ? p.fc : p.nc;
-            p.ta = r < 0.5 ? p.fa : p.na;
-          }
-        }
-
-        // 3D: yaw around the vertical axis, pitch around the horizontal one
-        var x1 = lx * cy + lz * sy;
-        var z1 = -lx * sy + lz * cy;
-        var y1 = ly * cp - z1 * sp;
-        var z2 = ly * sp + z1 * cp;
-        f = D / (D - z2);
-        var gx = L.cx + x1 * f + p.sx * scrollP;
-        var gy = L.cy + y1 * f + p.sy * scrollP;
-        p.f = f;
-
-        if (moving) {
-          p.vx = gx - p.x;
-          p.vy = gy - p.y;
-          p.x = gx;
-          p.y = gy;
-          p.e = 1;
-          p.a += (p.ta - p.a) * 0.18;
-        } else if (p.done) {
-          // spring home, part around the cursor
-          p.vx += (gx - p.x) * 0.045;
-          p.vy += (gy - p.y) * 0.045;
-          var mx = p.x - mouse.x;
-          var my = p.y - mouse.y;
-          var md = mx * mx + my * my;
-          if (md < R * R) {
-            var d = Math.sqrt(md) + 0.01;
-            var push = (1 - d / R) * 2.6;
-            p.vx += (mx / d) * push;
-            p.vy += (my / d) * push;
-          }
-          p.vx *= 0.82;
-          p.vy *= 0.82;
-          p.x += p.vx;
-          p.y += p.vy;
-          p.a += (p.ta - p.a) * 0.08;
-          p.e = 1;
-        } else {
-          // intro: unwind from a wider, rotated copy into place
-          var k = Math.max(0, Math.min(1, (since - p.delay) / 0.95));
-          var e = 1 - Math.pow(1 - k, 4);
-          var inv = 1 - e;
-          var ox = gx - L.cx;
-          var oy = gy - L.cy;
-          var th = p.th0 * inv;
-          var sc = 1 + (p.k0 - 1) * inv;
-          var ct = Math.cos(th);
-          var st = Math.sin(th);
-          var nx = L.cx + (ox * ct - oy * st) * sc + p.jx * inv + Math.sin(now / 1300 + i) * 4 * inv;
-          var ny = L.cy + (ox * st + oy * ct) * sc + p.jy * inv + Math.cos(now / 1100 + i * 0.7) * 4 * inv;
-          p.vx = nx - p.x;
-          p.vy = ny - p.y;
-          p.x = nx;
-          p.y = ny;
-          p.e = e;
-          p.a = p.ta * (0.3 + 0.7 * e);
-          if (k >= 1) {
-            p.done = true;
-            p.vx = 0;
-            p.vy = 0;
-          }
+        // intro: unwind from a wider, rotated copy into place
+        var k = Math.max(0, Math.min(1, (since - p.delay) / 0.95));
+        var e = 1 - Math.pow(1 - k, 4);
+        var inv = 1 - e;
+        var ox = gx - L.cx;
+        var oy = gy - L.cy;
+        var th = p.th0 * inv;
+        var sc = 1 + (p.k0 - 1) * inv;
+        var ct = Math.cos(th);
+        var st = Math.sin(th);
+        var nx = L.cx + (ox * ct - oy * st) * sc + p.jx * inv + Math.sin(now / 1300 + i) * 4 * inv;
+        var ny = L.cy + (ox * st + oy * ct) * sc + p.jy * inv + Math.cos(now / 1100 + i * 0.7) * 4 * inv;
+        p.vx = nx - p.x;
+        p.vy = ny - p.y;
+        p.x = nx;
+        p.y = ny;
+        p.e = e;
+        p.a = p.ta * (0.3 + 0.7 * e);
+        if (k >= 1) {
+          p.done = true;
+          p.vx = 0;
+          p.vy = 0;
         }
       }
 
       if (p.a < 0.02) continue;
-      var depth = (p.f || 1) * (reduce ? 1 : 0.6 + 0.4 * p.e);
+      var depth = (p.f || 1) * (0.6 + 0.4 * p.e);
       ctx.globalAlpha = fade * p.a * Math.min(1, 0.45 + (depth - 0.85) * 2.2);
       var speed = p.vx * p.vx + p.vy * p.vy;
-      if (!reduce && speed > 9) {
+      if (speed > 9) {
         // fast dots draw as short streaks
         var trail = moving ? 0.8 : p.done ? 2.4 : 1.1;
         ctx.strokeStyle = p.c;
@@ -581,7 +563,7 @@
   }
 
   function play() {
-    if (running || reduce) return;
+    if (running) return;
     running = true;
     prevFrame = 0;
     raf = requestAnimationFrame(frame);
@@ -609,49 +591,47 @@
     });
   });
 
-  if (!reduce) {
-    hero.addEventListener("pointermove", function (e) {
-      if (e.pointerType === "touch") return;
-      var r = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - r.left;
-      mouse.y = e.clientY - r.top;
-      lastPointer = performance.now();
-      if (L) {
-        view.nx = Math.max(-1, Math.min(1, (mouse.x - L.cx) / (W * 0.5)));
-        view.ny = Math.max(-1, Math.min(1, (mouse.y - L.cy) / (H * 0.5)));
-      }
-      if (dragFrom) {
-        var dx = e.clientX - dragFrom.x;
-        if (Math.abs(dx) > 6) dragged = true;
-        view.drag = dragFrom.d + dx * 0.012;
-      }
-    });
-    hero.addEventListener("pointerleave", function () {
-      mouse.x = mouse.y = -9999;
-      view.nx = view.ny = 0;
-    });
-    hero.addEventListener("pointerdown", function (e) {
-      // drag to spin, but leave text selection in the copy alone
-      if (e.pointerType === "touch" || isControl(e.target) || e.target.closest(".hero__copy")) return;
-      dragFrom = { x: e.clientX, d: view.drag };
+  hero.addEventListener("pointermove", function (e) {
+    if (e.pointerType === "touch") return;
+    var r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+    lastPointer = performance.now();
+    if (L) {
+      view.nx = Math.max(-1, Math.min(1, (mouse.x - L.cx) / (W * 0.5)));
+      view.ny = Math.max(-1, Math.min(1, (mouse.y - L.cy) / (H * 0.5)));
+    }
+    if (dragFrom) {
+      var dx = e.clientX - dragFrom.x;
+      if (Math.abs(dx) > 6) dragged = true;
+      view.drag = dragFrom.d + dx * 0.012;
+    }
+  });
+  hero.addEventListener("pointerleave", function () {
+    mouse.x = mouse.y = -9999;
+    view.nx = view.ny = 0;
+  });
+  hero.addEventListener("pointerdown", function (e) {
+    // drag to spin, but leave text selection in the copy alone
+    if (e.pointerType === "touch" || isControl(e.target) || e.target.closest(".hero__copy")) return;
+    dragFrom = { x: e.clientX, d: view.drag };
+    dragged = false;
+  });
+  var endDrag = function () {
+    if (!dragFrom) return;
+    dragFrom = null;
+    released = performance.now();
+  };
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
+  hero.addEventListener("click", function (e) {
+    if (isControl(e.target)) return;
+    if (dragged) {
       dragged = false;
-    });
-    var endDrag = function () {
-      if (!dragFrom) return;
-      dragFrom = null;
-      released = performance.now();
-    };
-    window.addEventListener("pointerup", endDrag);
-    window.addEventListener("pointercancel", endDrag);
-    hero.addEventListener("click", function (e) {
-      if (isControl(e.target)) return;
-      if (dragged) {
-        dragged = false;
-        return;
-      }
-      morphTo(cur + 1, performance.now());
-    });
-  }
+      return;
+    }
+    morphTo(cur + 1, performance.now());
+  });
 
   // Scatter and fade as the hero scrolls away
   function onScroll() {
@@ -659,7 +639,6 @@
     var prog = Math.max(0, Math.min(1, -r.top / r.height));
     scrollP = W > 900 ? prog : Math.max(0, (prog - 0.45) / 0.55);
     if (label) label.style.opacity = String(1 - Math.min(1, scrollP * 3));
-    if (reduce) draw(performance.now());
   }
   window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -687,6 +666,5 @@
   onScroll();
   introStart = performance.now();
   lastMorph = introStart + 2500;
-  if (reduce) draw(introStart);
   sync();
 })();

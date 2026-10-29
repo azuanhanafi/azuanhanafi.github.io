@@ -24,6 +24,8 @@ Open `index.html`:
 - **Projects** — add an `<article class="proj">` to the `.work` grid, plus a matching `<dialog class="modal">` for its details.
 - **Experience / Skills** — update text directly; keep the existing markup pattern.
 
+Animations run for every visitor regardless of the operating system's reduce-motion setting.
+
 After changing `styles.css` or a script, bump its `?v=` number in `index.html` so browsers fetch the new file.
 
 To update the resume: drop a new PDF in at `assets/Azuan-Hanafi-Resume.pdf` (same name), commit, push.
