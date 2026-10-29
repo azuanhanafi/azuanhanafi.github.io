@@ -10,7 +10,8 @@
   if (!canvas || !canvas.getContext || !hero || !stage) return;
 
   var ctx = canvas.getContext("2d");
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Motion is on unless the visitor paused it with the footer button
+  var reduce = document.documentElement.classList.contains("motion-off");
 
   // ---------- Palette ----------
   var INK = "#231F20";

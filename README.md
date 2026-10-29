@@ -9,7 +9,7 @@ Plain HTML/CSS/JS, no build step. Deployed via GitHub Pages to [azuanhanafi.my](
 |------|---------|
 | `index.html` | All page content: hero, about, experience, capabilities, projects, how I work, skills, education, contact. |
 | `styles.css` | Styling and design tokens (light theme, green accent, deep teal bands). |
-| `script.js` | Email links, KUL clock, nav pill and mobile menu, experience tabs, capabilities accordion, project dialogs, scroll-lit statement, custom cursor, back-to-top, reveals, scroll-spy. |
+| `script.js` | Email links, KUL clock, nav pill and mobile menu, experience tabs, capabilities accordion, project dialogs, scroll-lit statement, custom cursor, back-to-top, reveals, scroll-spy, and the footer "Pause animations" button. |
 | `dots.js` | Hero dot animation: industry icons drawn in dots that react to the cursor, tilt in 3D and morph on click. Shapes are defined in the `SHAPES` list. |
 | `vendor/` | Self-hosted anime.js and fonts (Outfit, Figtree, JetBrains Mono) with their licenses. |
 | `assets/Azuan-Hanafi-Resume.pdf` | Downloadable resume. Replace this file to update it. |
@@ -23,6 +23,8 @@ Open `index.html`:
 - **Contact** — replace the LinkedIn URL with your real profile.
 - **Projects** — add an `<article class="proj">` to the `.work` grid, plus a matching `<dialog class="modal">` for its details.
 - **Experience / Skills** — update text directly; keep the existing markup pattern.
+
+Animations run for every visitor regardless of the operating system's reduce-motion setting; visitors can stop them with the "Pause animations" button in the footer (remembered per browser).
 
 After changing `styles.css` or a script, bump its `?v=` number in `index.html` so browsers fetch the new file.
 

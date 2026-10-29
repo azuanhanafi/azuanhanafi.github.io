@@ -3,7 +3,9 @@
 
   var doc = document;
   var root = doc.documentElement;
-  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Animations run for every visitor, whatever the OS "reduce motion" setting;
+  // the footer button can pause them (remembered in localStorage)
+  var reduceMotion = root.classList.contains("motion-off");
 
   function each(selector, fn, scope) {
     Array.prototype.forEach.call((scope || doc).querySelectorAll(selector), fn);
@@ -43,6 +45,19 @@
     tickClock();
     setInterval(tickClock, 15000);
   }
+
+  // Footer button: pause or resume animations, then reload to apply
+  each("[data-motion-toggle]", function (btn) {
+    var label = btn.querySelector(".motion-toggle__label");
+    label.textContent = reduceMotion ? "Play animations" : "Pause animations";
+    btn.addEventListener("click", function () {
+      try {
+        localStorage.setItem("motion", reduceMotion ? "on" : "off");
+      } catch (e) {}
+      root.classList.toggle("motion-off", !reduceMotion);
+      window.location.reload();
+    });
+  });
 
   // Last updated (from the page's Last-Modified header)
   each("[data-updated]", function (el) {
