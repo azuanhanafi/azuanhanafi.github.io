@@ -3,9 +3,6 @@
 
   var doc = document;
   var root = doc.documentElement;
-  // Animations run for every visitor, whatever the OS "reduce motion" setting;
-  // the footer button can pause them (remembered in localStorage)
-  var reduceMotion = root.classList.contains("motion-off");
 
   function each(selector, fn, scope) {
     Array.prototype.forEach.call((scope || doc).querySelectorAll(selector), fn);
@@ -45,19 +42,6 @@
     tickClock();
     setInterval(tickClock, 15000);
   }
-
-  // Footer button: pause or resume animations, then reload to apply
-  each("[data-motion-toggle]", function (btn) {
-    var label = btn.querySelector(".motion-toggle__label");
-    label.textContent = reduceMotion ? "Play animations" : "Pause animations";
-    btn.addEventListener("click", function () {
-      try {
-        localStorage.setItem("motion", reduceMotion ? "on" : "off");
-      } catch (e) {}
-      root.classList.toggle("motion-off", !reduceMotion);
-      window.location.reload();
-    });
-  });
 
   // Last updated (from the page's Last-Modified header)
   each("[data-updated]", function (el) {
@@ -255,7 +239,7 @@
   }
   if (toTop) {
     toTop.addEventListener("click", function () {
-      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       var main = doc.getElementById("main");
       if (main) main.focus({ preventScroll: true });
     });
@@ -308,7 +292,7 @@
     [".proj:not(.proj--soon)", ".proj__shot, .flow", 12, 10],
     [".kit__card", ".kit__icon", 9, 7]
   ];
-  if (!reduceMotion && finePointer) {
+  if (finePointer) {
     TILT.forEach(function (set) {
       each(set[0], function (card) {
         tilt(card, card.querySelector(set[1]), set[2], set[3]);
@@ -376,7 +360,7 @@
   var orb = doc.querySelector(".cta__orb");
   var orbDot = doc.querySelector(".cta__orb-dot");
   var ctaCard = doc.querySelector(".cta");
-  if (orb && ctaCard && finePointer && !reduceMotion) {
+  if (orb && ctaCard && finePointer) {
     var oNow = { x: 0, y: 0, a: 145 };
     var oGoal = { x: 0, y: 0, a: 145 };
     var oRaf = 0;
@@ -419,19 +403,19 @@
   }
   function scrubSections() {
     var vh = window.innerHeight;
-    if (band && !reduceMotion) {
+    if (band) {
       var p = clamp01((vh - band.getBoundingClientRect().top) / (vh * 0.7));
       var side = (1 - p) * (window.innerWidth > 760 ? 5 : 3);
       band.style.clipPath = "inset(0% " + side.toFixed(2) + "% round " + (56 * (1 - p)).toFixed(1) + "px)";
     }
-    if (scaleIn && !reduceMotion) {
+    if (scaleIn) {
       var q = clamp01((vh - scaleIn.getBoundingClientRect().top) / (vh * 0.65));
       scaleIn.style.transform = "scale(" + (0.86 + 0.14 * q).toFixed(4) + ")";
       scaleIn.style.borderRadius = (80 - 44 * q).toFixed(1) + "px";
     }
     if (stepsFill) {
       var r = stepsBox.getBoundingClientRect();
-      var f = reduceMotion ? 1 : clamp01((vh * 0.75 - r.top) / (r.height + vh * 0.2));
+      var f = clamp01((vh * 0.75 - r.top) / (r.height + vh * 0.2));
       stepsFill.style.transform = "scaleX(" + f.toFixed(3) + ")";
       stepItems.forEach(function (el, i) {
         el.classList.toggle("is-on", f >= i / Math.max(stepItems.length - 1, 1) - 0.001);
@@ -441,7 +425,7 @@
   scrubSections();
 
   // ---------- Custom cursor (mouse and pen only) ----------
-  if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+  if (finePointer) {
     var cursor = doc.createElement("div");
     cursor.className = "cursor";
     cursor.setAttribute("aria-hidden", "true");
@@ -547,7 +531,7 @@
 
   // ---------- Text: titles rise line by line, leads follow, eyebrows scramble ----------
   var anime = window.anime;
-  if (anime && anime.splitText && anime.scrambleText && !reduceMotion && "IntersectionObserver" in window) {
+  if (anime && anime.splitText && anime.scrambleText && "IntersectionObserver" in window) {
     var textObserver = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
@@ -683,7 +667,7 @@
   }
 
   // ---------- Reveal on scroll ----------
-  if (!("IntersectionObserver" in window) || reduceMotion) {
+  if (!("IntersectionObserver" in window)) {
     each("[data-reveal]", function (el) {
       el.classList.add("is-in");
     });

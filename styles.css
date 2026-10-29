@@ -942,27 +942,24 @@ button {
   margin-block: -0.06em -0.16em;
 }
 
-/* Motion runs for every visitor; only the footer "Pause animations"
-   button (html.motion-off) turns it off */
-
 /* Hide the hero title and lede until they are split, with a fallback */
-.js:not(.motion-off) .hero__copy > .hero__title,
-.js:not(.motion-off) .hero__copy > .hero__lede {
+.js .hero__copy > .hero__title,
+.js .hero__copy > .hero__lede {
   opacity: 0;
   animation: show-late 0s 2.5s forwards;
 }
 
-.js:not(.motion-off) .hero__copy > .hero__title.is-split,
-.js:not(.motion-off) .hero__copy > .hero__lede.is-split {
+.js .hero__copy > .hero__title.is-split,
+.js .hero__copy > .hero__lede.is-split {
   opacity: 1;
   animation: none;
 }
 
-html:not(.motion-off) .scroll-hint__mouse::after {
+.scroll-hint__mouse::after {
   animation: wheel 1.8s var(--ease) infinite;
 }
 
-html:not(.motion-off) .hero__copy > * {
+.hero__copy > * {
   animation: rise 1s var(--ease) both;
 }
 
@@ -1056,13 +1053,13 @@ html:not(.motion-off) .hero__copy > * {
   }
 }
 
-.js:not(.motion-off) [data-reveal] {
+.js [data-reveal] {
   opacity: 0;
   transform: translateY(26px);
   transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
 }
 
-.js:not(.motion-off) [data-reveal].is-in {
+.js [data-reveal].is-in {
   opacity: 1;
   transform: none;
 }
@@ -1121,10 +1118,6 @@ html:not(.motion-off) .hero__copy > * {
 
 .statement .textlink {
   margin-top: 40px;
-}
-
-.js.motion-off .statement__text .w {
-  opacity: 1;
 }
 
 /* ---------- Experience ---------- */
@@ -1281,7 +1274,7 @@ html:not(.motion-off) .hero__copy > * {
   gap: 8px;
 }
 
-.js:not(.motion-off) .xp__panel:not([hidden]) {
+.js .xp__panel:not([hidden]) {
   animation: rise 0.6s var(--ease) both;
 }
 
@@ -1407,7 +1400,7 @@ html:not(.motion-off) .hero__copy > * {
   padding: clamp(28px, 3vw, 44px);
 }
 
-.js:not(.motion-off) .acc__item.is-open .acc__body {
+.js .acc__item.is-open .acc__body {
   animation: fade-in 0.6s 0.2s var(--ease) both;
 }
 
@@ -1926,7 +1919,7 @@ html:not(.motion-off) .hero__copy > * {
   backdrop-filter: blur(6px);
 }
 
-html:not(.motion-off) .modal[open] {
+.modal[open] {
   animation: rise 0.45s var(--ease);
 }
 
@@ -2312,7 +2305,7 @@ html:not(.motion-off) .modal[open] {
   background: var(--peach);
 }
 
-html:not(.motion-off) .marquee__track {
+.marquee__track {
   animation: marquee 48s linear infinite;
 }
 
@@ -2812,51 +2805,4 @@ html:not(.motion-off) .marquee__track {
 
 .cursor-dot.on-dark {
   background: var(--on-dark);
-}
-
-/* ---------- Reduced motion ---------- */
-/* ---------- Motion paused from the footer button ---------- */
-html.motion-off {
-  scroll-behavior: auto;
-}
-
-.motion-off *,
-.motion-off *::before,
-.motion-off *::after {
-  transition-duration: 0.01ms !important;
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-}
-
-.motion-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 0 16px;
-  border: 1px solid rgba(234, 244, 238, 0.18);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--on-dark-muted);
-  font-family: var(--f-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
-}
-
-.motion-toggle:hover {
-  border-color: var(--green);
-  color: var(--white);
-}
-
-.motion-toggle__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--green);
-}
-
-.motion-off .motion-toggle__dot {
-  background: var(--on-dark-muted);
 }
