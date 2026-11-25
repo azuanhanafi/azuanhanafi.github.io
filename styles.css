@@ -2498,12 +2498,6 @@ button {
   color: var(--green);
 }
 
-.cta__lead {
-  margin-top: 20px;
-  color: var(--on-dark-muted);
-  font-size: 1.125rem;
-}
-
 .cta__actions {
   display: flex;
   flex-wrap: wrap;
@@ -2616,14 +2610,6 @@ button {
   font-family: var(--f-mono);
   font-size: 0.75rem;
   letter-spacing: 0.06em;
-}
-
-.footer__open {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 18px;
-  font-size: 0.875rem;
 }
 
 .footer__big {

@@ -125,7 +125,29 @@
       dist(x, y, BODY_BOTTOM[0], BODY_BOTTOM[1]) <= bodyWidth(BODY.a1);
   }
 
+  // Bank building: pediment roof with a coin, four columns, stepped base
+  var PEDIMENT = [[140, 26], [262, 92], [18, 92]];
+  var COLUMNS = [65, 115, 165, 215];
+
   var SHAPES = [
+    {
+      name: "Banking",
+      fn: function (x, y) {
+        if (dist(x, y, 140, 66) <= 8) return BROWN; // coin centre
+        if (dist(x, y, 140, 66) <= 16) return PEACH; // coin
+        if (inPoly(x, y, PEDIMENT)) return ramp(y);
+        if (inRRect(x, y, 30, 98, 250, 114, 3)) return INK; // entablature
+        for (var c = 0; c < COLUMNS.length; c++) {
+          var cx = COLUMNS[c];
+          if (inRRect(x, y, cx - 15, 120, cx + 15, 128, 2)) return ramp(y); // capital
+          if (inRRect(x, y, cx - 10, 128, cx + 10, 202, 2)) return ramp(y); // shaft
+          if (inRRect(x, y, cx - 15, 202, cx + 15, 210, 2)) return ramp(y); // base
+        }
+        if (inRRect(x, y, 26, 216, 254, 230, 3)) return INK; // plinth
+        if (inRRect(x, y, 12, 236, 268, 252, 4)) return BROWN; // steps
+        return null;
+      }
+    },
     {
       name: "Aerospace",
       fn: function (x, y) {
