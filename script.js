@@ -579,7 +579,7 @@
     each(".hero__title, .section .title, .cta__title", function (el) {
       splitReveal(el, TITLE);
     });
-    each(".hero__lede, .section__lead:not(.section__lead--note), .section__lead--note > span, .cta__lead", function (el) {
+    each(".hero__lede, .section__lead:not(.section__lead--note), .section__lead--note > span", function (el) {
       splitReveal(el, LEAD);
     });
 
