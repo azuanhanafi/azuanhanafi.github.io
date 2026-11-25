@@ -1183,18 +1183,6 @@ button {
   object-fit: contain;
 }
 
-/* Wordmark tile used until an official logo file is added */
-.xp__logo--text {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: 0.6875rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
 .xp__company {
   display: block;
   color: var(--ink);
